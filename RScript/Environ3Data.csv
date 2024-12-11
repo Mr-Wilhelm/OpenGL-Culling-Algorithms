@@ -1,6 +1,6 @@
-Algorithm	Polycount	FPS	GPU Use	RAM Use
-0	xxxxx	xxx	xx%	xx%
-1	xxxxx	xxx	xx%	xx%
-2	xxxxx	xxx	xx%	xx%
-3	xxxxx	xxx	xx%	xx%
-4	xxxxx	xxx	xx%	xx%
+Algorithm,PolCount,FPS,GPU,RAM
+0,100,144,20,10
+1,110,134,25,15
+2,120,124,30,20
+3,130,114,35,25
+4,140,104,40,30
