@@ -22,6 +22,9 @@
     <Filter Include="Header Files\NonIncludes">
       <UniqueIdentifier>{88f911a4-b24b-4735-aa31-c64bb6fd783e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Class Header Files">
+      <UniqueIdentifier>{fd887665-a6c9-4547-92c4-c94b984812a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -920,6 +923,9 @@
     <ClInclude Include="Dependencies\Includes\KHR\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\Class Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependencies\Lib\glfw3.lib" />
@@ -1338,6 +1344,12 @@
     </None>
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="shader.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader.fs">
+      <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

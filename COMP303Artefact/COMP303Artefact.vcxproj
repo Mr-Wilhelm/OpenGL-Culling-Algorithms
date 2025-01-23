@@ -434,6 +434,7 @@
     <ClInclude Include="Dependencies\Includes\GLM\vector_relational.hpp" />
     <ClInclude Include="Dependencies\Includes\KHR\khrplatform.h" />
     <ClInclude Include="Dependencies\Includes\stb\stb_image.h" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependencies\Lib\glfw3.lib" />
@@ -577,6 +578,8 @@
     <None Include="Dependencies\Includes\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl" />
+    <None Include="shader.fs" />
+    <None Include="shader.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
