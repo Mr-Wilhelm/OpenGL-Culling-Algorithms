@@ -1359,4 +1359,9 @@
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
     <Text Include="Dependencies\Includes\GLM\copying.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="white.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
