@@ -56,9 +56,19 @@ private:
 		ProcessNode(scene->mRootNode, scene);
 
 	}
-	void ProcessNode(aiNode* node, const aiScene* scene);	//takes assimp nodes and scenes as parameters
+	void ProcessNode(aiNode* node, const aiScene* scene)	//takes assimp nodes and scenes as parameters
+	{
+		for (unsigned int i = 0; i < node->mNumMeshes; i++)	//iterate through all of the nodes meshes
+		{
+			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];	//assign them to a variable
+			meshes.push_back(ProcessMesh(mesh, scene));	//run ProcessMesh function for each.
+		}
+	}
 	
-	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene)	//takes the processed node as an input
+	{
+
+	}
 
 
 
