@@ -631,6 +631,7 @@
     <None Include="Dependencies\Includes\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl" />
+    <None Include="Resources\Meshes\Survival_BackPack_2.fbx" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
   </ItemGroup>
@@ -639,6 +640,11 @@
     <Text Include="Dependencies\Includes\GLM\copying.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Textures\1001_albedo.jpg" />
+    <Image Include="Resources\Textures\1001_AO.jpg" />
+    <Image Include="Resources\Textures\1001_metallic.jpg" />
+    <Image Include="Resources\Textures\1001_normal.png" />
+    <Image Include="Resources\Textures\1001_roughness.jpg" />
     <Image Include="white.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
