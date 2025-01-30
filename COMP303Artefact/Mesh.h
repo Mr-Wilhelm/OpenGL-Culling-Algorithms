@@ -25,6 +25,7 @@ struct Texture
 {
 	unsigned int id;
 	std::string texType;	//type of texture (e.g. diffuse, specular, albedo etc)
+	std::string texPath;
 };
 
 class Mesh

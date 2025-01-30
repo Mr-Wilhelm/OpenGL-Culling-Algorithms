@@ -37,9 +37,10 @@ public:
 	}
 
 private:
+	std::vector<Texture> loadedTextures;
 	std::vector<Mesh> meshes;
 	std::string directory;
-	std::vector<Texture> texturesToLoad(aiMaterial* mat, aiTextureType type, std::string typeName);
+	
 
 	void SpawnModel(std::string path)
 	{
@@ -65,11 +66,137 @@ private:
 		}
 	}
 	
-	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene)	//takes the processed node as an input
+	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene)	//fills vertex, index and texture vectors and returns them as a mesh object
 	{
+		std::vector<Vertex> vertices;
+		std::vector<Texture> textures;
+		std::vector<unsigned int> indices;
 
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			Vertex vertex;
+
+			glm::vec3 vectorCoords;
+			vectorCoords.x = mesh->mVertices[i].x;	//setting vertex positions to a reference of the mesh vertices
+			vectorCoords.y = mesh->mVertices[i].y;
+			vectorCoords.z = mesh->mVertices[i].z;
+			vertex.pos = vectorCoords;	//pos from the vertex struct declared in Mesh.h
+
+			if (mesh->HasNormals())
+			{
+				vectorCoords.x = mesh->mNormals[i].x;	//setting normal positions to a reference of the mesh normals
+				vectorCoords.y = mesh->mNormals[i].y;
+				vectorCoords.z = mesh->mNormals[i].z;
+				vertex.norm = vectorCoords;	//norm value from the vertex struct in Mesh.h
+			}
+			else
+			{
+				std::cout << "Mesh has no normals" << std::endl;
+			}
+
+			if (mesh->mTextureCoords[0])
+			{
+				glm::vec2 texCoords;	//the UV/texture coordinates
+				texCoords.x = mesh->mTextureCoords[0][i].x;	//x
+				texCoords.y = mesh->mTextureCoords[0][i].y;	//y
+				vertex.texCoord = texCoords;	//texCoord value from the vertex struct in Mesh.h
+			}
+			else
+			{
+				vertex.texCoord = glm::vec2(0.0f, 0.0f);	//set texture coordinates to 0.0, 0.0
+				std::cout << "No Texture Coordinates" << std::endl;
+			}
+
+
+			vertices.push_back(vertex);
+		}
+
+		for (unsigned int i = 0;i < mesh->mNumFaces; i++)	//iterate through all faces
+		{
+			aiFace face = mesh->mFaces[i];
+
+			for (unsigned int j = 0; j < face.mNumIndices; j++)
+			{
+				indices.push_back(face.mIndices[j]);	//store the face indicies in the indices vector
+			}
+		}
+
+		//process materials
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			std::vector<Texture> diffuseMaps = TexturesToLoad(material, aiTextureType_DIFFUSE, "texture_diffuse");
+			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+			std::vector<Texture> specularMaps = TexturesToLoad(material, aiTextureType_SPECULAR, "texture_specular");
+			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		}
+
+		return Mesh(vertices, textures, indices);
 	}
 
+	std::vector<Texture> TexturesToLoad(aiMaterial* mat, aiTextureType type, std::string typeName)
+	{
+		std::vector<Texture> textures;
 
+		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)	//get all the texture of the input type and iterate through them
+		{
+			aiString assimpStr;
+			mat->GetTexture(type, i, &assimpStr);
 
+			Texture texture;
+			texture.id = GetTextureFromFile(assimpStr.C_Str(), directory, true);
+			texture.texType = typeName;
+			texture.texPath = assimpStr.C_Str();
+
+			textures.push_back(texture);
+		}
+	}
+
+	//this function is from learnopengl
+	unsigned int GetTextureFromFile(const char* path, const std::string& directory, bool gamma)	//gets texture from file path, taking the path, directory and gamma
+	{
+		std::string fileName = std::string(path);	//get the file name
+		fileName = directory + "/" + fileName;	//set it with the directory
+
+		unsigned int texID;	//texture ID
+		glGenTextures(1, &texID);
+
+		int width, height, nrComponents;	//nrComponents to do with the number of colours being added (RGBA)
+		unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
+		if (data)
+		{
+			GLenum format;
+			if (nrComponents == 1)	//just red
+			{
+				format = GL_RED;
+			}
+			else if (nrComponents == 3)	//RGB
+			{
+				format = GL_RGB;
+			}
+			else if(nrComponents == 4)	//RGBA (use if the texture has alpha transparency)
+			{
+				format = GL_RGBA;
+			}
+
+			glBindTexture(GL_TEXTURE_2D, texID);
+			glTexImage2D(GL_TEXTURE, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);	//setting the texture settings to clamp to border
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Failed to find texture at path" << path << std::endl;
+			stbi_image_free(data);
+		}
+		return texID;
+	}
+		
 };
