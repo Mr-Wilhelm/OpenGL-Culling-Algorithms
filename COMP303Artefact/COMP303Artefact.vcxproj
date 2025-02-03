@@ -631,9 +631,9 @@
     <None Include="Dependencies\Includes\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl" />
-    <None Include="Resources\Meshes\Survival_BackPack_2.fbx" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="Survival_BackPack_2.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />

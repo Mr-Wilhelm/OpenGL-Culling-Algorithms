@@ -1506,7 +1506,7 @@
     <None Include="Dependencies\Includes\assimp\vector3.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Resources\Meshes\Survival_BackPack_2.fbx" />
+    <None Include="Survival_BackPack_2.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
