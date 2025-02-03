@@ -19,7 +19,7 @@
 #include <map>
 #include <vector>
 
-unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
+unsigned int GetTextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
 class Model
 {
@@ -50,7 +50,7 @@ private:
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "Assimp Error In Model.h Line 52 " << import.GetErrorString() << std::endl;
+			std::cout << "Assimp Error In Model.h Line 53 " << import.GetErrorString() << std::endl;
 			return;
 		}
 		directory = path.substr(0, path.find_last_of("/"));
@@ -106,15 +106,15 @@ private:
 				texCoords.y = mesh->mTextureCoords[0][i].y;	//y
 				vertex.texCoord = texCoords;	//texCoord value from the vertex struct in Mesh.h
 
-				vectorCoords.x = mesh->mTangents[i].x;	//tangents
-				vectorCoords.y = mesh->mTangents[i].y;
-				vectorCoords.z = mesh->mTangents[i].z;
-				vertex.tang = vectorCoords;
+				//vectorCoords.x = mesh->mTangents[i].x;	//tangents
+				//vectorCoords.y = mesh->mTangents[i].y;
+				//vectorCoords.z = mesh->mTangents[i].z;
+				//vertex.tang = vectorCoords;
 
-				vectorCoords.x = mesh->mBitangents[i].x;
-				vectorCoords.y = mesh->mBitangents[i].y;
-				vectorCoords.z = mesh->mBitangents[i].z;
-				vertex.bitTang = vectorCoords;
+				//vectorCoords.x = mesh->mBitangents[i].x;
+				//vectorCoords.y = mesh->mBitangents[i].y;
+				//vectorCoords.z = mesh->mBitangents[i].z;
+				//vertex.bitTang = vectorCoords;
 			}
 			else
 			{
@@ -156,39 +156,34 @@ private:
 		return Mesh(vertices, textures, indices);
 	}
 
-	std::vector<Texture> TexturesToLoad(aiMaterial* mat, aiTextureType type, std::string typeName)
+	std::vector<Texture> TexturesToLoad(aiMaterial* mat, aiTextureType type, std::string typeName)	//this is loadMaterialTextures in the example
 	{
 		std::vector<Texture> textures;
-
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
-			aiString assimpString;
-			mat->GetTexture(type, i, &assimpString);
-
-			//check if the texture has already been loaded, skipping to the next iteration if so
+			aiString str;
+			mat->GetTexture(type, i, &str);
+			// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 			bool skip = false;
-
 			for (unsigned int j = 0; j < loadedTextures.size(); j++)
 			{
-				if (std::strcmp(loadedTextures[j].texPath.data(), assimpString.C_Str()) == 0)
+				if (std::strcmp(loadedTextures[j].texPath.data(), str.C_Str()) == 0)
 				{
 					textures.push_back(loadedTextures[j]);
-					skip = true;
+					skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
 					break;
 				}
 			}
-
-			if (!skip)	//if texture is not loaded, get thet texture type, path and add it to the loadedTextures
-			{
+			if (!skip)
+			{   // if texture hasn't been loaded already, load it
 				Texture texture;
-				texture.id = TextureFromFile(assimpString.C_Str(), this->directory);
+				texture.id = GetTextureFromFile(str.C_Str(), this->directory, false);
 				texture.texType = typeName;
-				texture.texPath = assimpString.C_Str();
+				texture.texPath = str.C_Str();
 				textures.push_back(texture);
-				loadedTextures.push_back(texture);
+				loadedTextures.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
 			}
 		}
-
 		return textures;
 	}
 

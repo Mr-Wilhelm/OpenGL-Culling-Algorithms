@@ -640,11 +640,11 @@
     <Text Include="Dependencies\Includes\GLM\copying.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Textures\1001_albedo.jpg" />
-    <Image Include="Resources\Textures\1001_AO.jpg" />
-    <Image Include="Resources\Textures\1001_metallic.jpg" />
-    <Image Include="Resources\Textures\1001_normal.png" />
-    <Image Include="Resources\Textures\1001_roughness.jpg" />
+    <Image Include="1001_albedo.jpg" />
+    <Image Include="1001_AO.jpg" />
+    <Image Include="1001_metallic.jpg" />
+    <Image Include="1001_normal.png" />
+    <Image Include="1001_roughness.jpg" />
     <Image Include="white.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1516,19 +1516,19 @@
     <Image Include="white.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\1001_albedo.jpg">
+    <Image Include="1001_albedo.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\1001_AO.jpg">
+    <Image Include="1001_AO.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\1001_metallic.jpg">
+    <Image Include="1001_metallic.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\1001_normal.png">
+    <Image Include="1001_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\1001_roughness.jpg">
+    <Image Include="1001_roughness.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
