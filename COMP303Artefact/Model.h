@@ -24,7 +24,7 @@ class Model
 {
 public:
 
-	Model(char* path)
+	Model(std::string const &path)
 	{
 		SpawnModel(path);
 	}
@@ -45,14 +45,14 @@ private:
 	void SpawnModel(std::string path)
 	{
 		Assimp::Importer import;
-		const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene *scene = import.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "Assimp Error" << import.GetErrorString() << std::endl;
+			std::cout << "Assimp Error In Model.h Line 52 " << import.GetErrorString() << std::endl;
 			return;
 		}
-		directory = path.substr(0, path.find_last_of("."));
+		directory = path.substr(0, path.find_last_of("/"));
 
 		ProcessNode(scene->mRootNode, scene);
 
@@ -130,6 +130,12 @@ private:
 
 			std::vector<Texture> specularMaps = TexturesToLoad(material, aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+			std::vector<Texture> normalMaps = TexturesToLoad(material, aiTextureType_HEIGHT, "texture_normal");
+			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+			// 4. height maps
+			std::vector<Texture> heightMaps = TexturesToLoad(material, aiTextureType_AMBIENT, "texture_height");
+			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 		}
 
 		return Mesh(vertices, textures, indices);
@@ -151,6 +157,8 @@ private:
 
 			textures.push_back(texture);
 		}
+
+		return textures;
 	}
 
 	//this function is from learnopengl

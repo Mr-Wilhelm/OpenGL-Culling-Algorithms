@@ -23,6 +23,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -82,9 +83,9 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    //Shader ourShader("shader.vs", "shader.fs");
+    Shader ourShader("shader.vs", "shader.fs");
 
-    Model modelOne();   //TODO: Add the file path
+    Model modelOne("Survival_BackPack_2.fbx");   //TODO: Add the file path
 
 #pragma region old vertices code
     //float vertices[] = {
@@ -231,6 +232,18 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //sorting out view and projection transformations.
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)800 / (float)600, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
+
+        //rendering the model loaded before the while loop
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        ourShader.setMat4("model", model);
+        modelOne.Draw(ourShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
