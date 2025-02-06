@@ -23,6 +23,8 @@
 
 unsigned int GetTextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
+unsigned int numFaces;
+
 class Model
 {
 public:
@@ -127,7 +129,6 @@ private:
 				indices.push_back(face.mIndices[j]);	//store the face indicies in the indices vector
 			}
 		}
-
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		//diffuse textures

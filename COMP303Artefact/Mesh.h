@@ -9,6 +9,9 @@
 #include<string>
 #include<vector>
 
+int vertCount;
+int indCount;
+
 struct Vertex
 {
 	glm::vec3 pos;	//position
@@ -103,6 +106,7 @@ private:
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));	//setting vertex texture coordinates
 
 		glBindVertexArray(0);
+
 	}
 
 
