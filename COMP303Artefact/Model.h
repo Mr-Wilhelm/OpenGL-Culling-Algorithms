@@ -1,3 +1,5 @@
+//LearnOpenGL's Model Class - https://learnopengl.com/Model-Loading/Model
+
 #include <glad/glad.h>
 
 #include <GLM/glm.hpp>
@@ -105,16 +107,6 @@ private:
 				texCoords.x = mesh->mTextureCoords[0][i].x;	//x
 				texCoords.y = mesh->mTextureCoords[0][i].y;	//y
 				vertex.texCoord = texCoords;	//texCoord value from the vertex struct in Mesh.h
-
-				//vectorCoords.x = mesh->mTangents[i].x;	//tangents
-				//vectorCoords.y = mesh->mTangents[i].y;
-				//vectorCoords.z = mesh->mTangents[i].z;
-				//vertex.tang = vectorCoords;
-
-				//vectorCoords.x = mesh->mBitangents[i].x;
-				//vectorCoords.y = mesh->mBitangents[i].y;
-				//vectorCoords.z = mesh->mBitangents[i].z;
-				//vertex.bitTang = vectorCoords;
 			}
 			else
 			{

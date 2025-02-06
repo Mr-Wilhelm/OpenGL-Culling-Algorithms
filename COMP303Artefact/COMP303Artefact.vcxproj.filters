@@ -1507,6 +1507,9 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Survival_BackPack_2.fbx" />
+    <None Include="TrikeModel.fbx" />
+    <None Include="Building.fbx" />
+    <None Include="PokeCity.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
@@ -1516,19 +1519,10 @@
     <Image Include="white.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="1001_albedo.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="1001_AO.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="1001_metallic.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="1001_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="1001_roughness.jpg">
+    <Image Include="_60.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

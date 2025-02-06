@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+//LearnOpenGL's Mesh class - https://learnopengl.com/Model-Loading/Mesh
 
 #include <glad/glad.h>
 #include <GLM/glm.hpp>
@@ -108,5 +107,3 @@ private:
 
 
 };
-
-#endif MESH_H

@@ -19,8 +19,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1200;
+const unsigned int SCR_HEIGHT = 800;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -75,17 +75,18 @@ int main()
 
     // configure global opengl state
     // -----------------------------
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
 
     // build and compile shaders
     // -------------------------
     Shader ourShader("shader.vs", "shader.fs");
 
-    Model ourModel("Survival_BackPack_2.fbx");   //TODO: Add the file path
+    Model ourModel("PokeCity.fbx");   //TODO: Add the file path
+    //Model ourSecondModel("Building.fbx");
 
 
     // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -110,7 +111,7 @@ int main()
         ourShader.use();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000000.0f);
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
@@ -118,9 +119,16 @@ int main()
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
+        model = glm::rotate(model, -.0f, glm::vec3(1.0f, 0.0f, 0.0f));
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
+
+        //glm::mat4 model2 = glm::mat4(1.0f);
+        //model2 = glm::translate(model2, glm::vec3(10.0f, 10.0f, 10.0f));
+        //model2 = glm::scale(model2, glm::vec3(1.0f, 1.0f, 1.0f));
+        //ourShader.setMat4("model", model);
+        //ourSecondModel.Draw(ourShader);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

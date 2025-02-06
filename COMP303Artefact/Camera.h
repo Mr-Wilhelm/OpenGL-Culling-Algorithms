@@ -1,6 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
+//LearnOpenGL's Camera Class - https://learnopengl.com/Getting-started/Camera
 #include <glad/glad.h>
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
@@ -16,7 +14,7 @@ enum Camera_Movement {
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 2.5f;
+const float SPEED = 50.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -125,4 +123,3 @@ private:
         Up = glm::normalize(glm::cross(Right, Front));
     }
 };
-#endif
