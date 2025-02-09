@@ -123,6 +123,7 @@ private:
 		for (unsigned int i = 0;i < mesh->mNumFaces; i++)	//iterate through all faces
 		{
 			aiFace face = mesh->mFaces[i];
+			numFaces += 1;	//increments the total number of faces by 1
 
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 			{

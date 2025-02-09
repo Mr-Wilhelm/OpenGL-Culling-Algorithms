@@ -85,31 +85,23 @@ int main()
     // -------------------------
     Shader ourShader("shader.vs", "shader.fs");
 
-    Model ourModel("PokeCity.fbx");   //TODO: Add the file path
+    //Model ourModel("PokeCity.fbx");   //TODO: Add the file path
     //Model ourSecondModel("Building.fbx");
+    Model ourModel("Survival_BackPack_2.fbx");
 
 
     // draw in wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // render loop
-    // -----------
+    //Main Loop
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
-        float currentFrame = static_cast<float>(glfwGetTime());
+        float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // input
-        // -----
         processInput(window);
 
-        // render
-        // ------
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -121,16 +113,12 @@ int main()
         //ourShader.setMat4("model", model);
         //ourSecondModel.Draw(ourShader);
 
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
+        std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }
@@ -149,7 +137,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
+    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
     model = glm::rotate(model, -.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     ourShader.setMat4("model", model);
     ourModel.Draw(ourShader);
