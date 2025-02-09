@@ -99,6 +99,8 @@ int main()
 
     // draw in wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
     //Main Loop
     while (!glfwWindowShouldClose(window))
