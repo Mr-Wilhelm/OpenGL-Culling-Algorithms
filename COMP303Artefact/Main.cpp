@@ -85,10 +85,17 @@ int main()
     // -------------------------
     Shader ourShader("shader.vs", "shader.fs");
 
-    //Model ourModel("PokeCity.fbx");   //TODO: Add the file path
-    //Model ourSecondModel("Building.fbx");
+
+#pragma region Model fbx
+
+    //Make sure there is the exact number of models that need to be rendered
+    //otherwise the model faces are processed, but not draw, which will add to the face count
+
     Model ourModel("Survival_BackPack_2.fbx");
 
+    //Model ourSecondModel("Survival_BackPack_2.fbx");
+
+#pragma endregion
 
     // draw in wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -105,13 +112,8 @@ int main()
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        DrawModels(ourShader, ourModel);    //optimize this to iterate through models.
+        DrawModels(ourShader, ourModel);    //Draw the models
 
-        //glm::mat4 model2 = glm::mat4(1.0f);
-        //model2 = glm::translate(model2, glm::vec3(10.0f, 10.0f, 10.0f));
-        //model2 = glm::scale(model2, glm::vec3(1.0f, 1.0f, 1.0f));
-        //ourShader.setMat4("model", model);
-        //ourSecondModel.Draw(ourShader);
 
         std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
@@ -134,13 +136,24 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);
 
+#pragma region First Model
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-    model = glm::rotate(model, -.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));	// it's a bit too big for our scene, so scale it down
+    model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     ourShader.setMat4("model", model);
     ourModel.Draw(ourShader);
+#pragma endregion
+
+#pragma region Second Model
+    //glm::mat4 model2 = glm::mat4(1.0f);
+    //model2 = glm::translate(model2, glm::vec3(10.0f, 10.0f, 10.0f));
+    //model2 = glm::scale(model2, glm::vec3(20.0f, 20.0f, 20.0f));
+    //model2 = glm::rotate(model2, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    //ourShader.setMat4("model", model2);
+    //ourModel.Draw(ourShader);
+#pragma endregion
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
