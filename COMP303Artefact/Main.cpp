@@ -38,6 +38,8 @@ bool wireFrame = false;
 
 int main()
 {
+
+
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -73,18 +75,18 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     stbi_set_flip_vertically_on_load(true);
 
-    // configure global opengl state
-    // -----------------------------
-    //glEnable(GL_DEPTH_TEST);
 
-    // build and compile shaders
-    // -------------------------
+
     Shader ourShader("shader.vs", "shader.fs");
 
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);     // draw in wireframe
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
+    glCullFace(GL_BACK);    //tell opengl to cull the back faces
+    glFrontFace(GL_FRONT);  //tell opengl which faces are the front faces
 
 #pragma region Model fbx
 
@@ -97,17 +99,25 @@ int main()
 
 #pragma endregion
 
-    // draw in wireframe
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    glfwSwapInterval(0);    //disable vsync
+
+    unsigned int fpsCounter = 0;
 
     //Main Loop
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        fpsCounter++;
+
+
+        if (deltaTime >= 1.0f / 30.0f)
+        {
+            std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter);
+            glfwSetWindowTitle(window, framerate.c_str());
+            lastFrame = currentFrame;
+            fpsCounter = 0;
+        }
 
         processInput(window);
 
@@ -141,8 +151,8 @@ void DrawModels(Shader& ourShader, Model& ourModel)
 #pragma region First Model
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));	// it's a bit too big for our scene, so scale it down
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position
+    model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));	// scale
     model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     ourShader.setMat4("model", model);
     ourModel.Draw(ourShader);
