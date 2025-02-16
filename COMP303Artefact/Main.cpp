@@ -36,6 +36,11 @@ float lastFrame = 0.0f;
 
 bool wireFrame = false;
 
+//culling bools
+bool isBackCulling = false;
+bool isFrustumCulling = false;
+bool isOcclusionCulling = false;
+
 int main()
 {
 
@@ -93,7 +98,7 @@ int main()
     //Make sure there is the exact number of models that need to be rendered
     //otherwise the model faces are processed, but not draw, which will add to the face count
 
-    Model ourModel("Survival_BackPack_2.fbx");
+    Model ourModel("Sphere.fbx");
 
     //Model ourSecondModel("Survival_BackPack_2.fbx");
 
@@ -127,7 +132,7 @@ int main()
         DrawModels(ourShader, ourModel);    //Draw the models
 
 
-        std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
+        //std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -184,6 +189,55 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+        if (!isBackCulling)
+        {
+            std::cout << "enable back face culling" << std::endl;
+            isBackCulling = true;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    {
+        if (isBackCulling)
+        {
+            std::cout << "disable back face culling" << std::endl;
+            isBackCulling = false;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+    {
+        if (!isFrustumCulling)
+        {
+            std::cout << "enable frustum culling" << std::endl;
+            isFrustumCulling = true;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+    {
+        if (isFrustumCulling)
+        {
+            std::cout << "disable frustum culling" << std::endl;
+            isFrustumCulling = false;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+    {
+        if (!isOcclusionCulling)
+        {
+            std::cout << "enable occlusion culling" << std::endl;
+            isOcclusionCulling = true;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+    {
+        if (isOcclusionCulling)
+        {
+            std::cout << "disable occlusion culling" << std::endl;
+            isOcclusionCulling = false;
+        }
+    }
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -193,6 +247,7 @@ void processInput(GLFWwindow* window)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+
         
 }
 

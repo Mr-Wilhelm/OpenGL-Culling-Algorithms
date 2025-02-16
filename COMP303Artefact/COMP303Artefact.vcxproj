@@ -635,6 +635,7 @@
     <None Include="PokeCity.fbx" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="Sphere.fbx" />
     <None Include="Survival_BackPack_2.fbx" />
     <None Include="TrikeModel.fbx" />
   </ItemGroup>
@@ -644,7 +645,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="1001_normal.png" />
-    <Image Include="white.png" />
+    <Image Include="texture_diffuse.png" />
     <Image Include="_60.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

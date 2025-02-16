@@ -1510,13 +1510,14 @@
     <None Include="TrikeModel.fbx" />
     <None Include="Building.fbx" />
     <None Include="PokeCity.fbx" />
+    <None Include="Sphere.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
     <Text Include="Dependencies\Includes\GLM\copying.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="white.png">
+    <Image Include="texture_diffuse.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="1001_normal.png">
