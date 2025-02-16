@@ -41,10 +41,11 @@ bool isBackCulling = false;
 bool isFrustumCulling = false;
 bool isOcclusionCulling = false;
 
+//model transform
+glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 int main()
 {
-
-
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -115,7 +116,6 @@ int main()
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
 
-
         if (deltaTime >= 1.0f / 30.0f)
         {
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter);
@@ -158,7 +158,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position
     model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));	// scale
-    model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, 0.0f, glm::vec3(0.0f, 0.0f, 0.0f));
     ourShader.setMat4("model", model);
     ourModel.Draw(ourShader);
 #pragma endregion
@@ -193,7 +193,7 @@ void processInput(GLFWwindow* window)
     {
         if (!isBackCulling)
         {
-            std::cout << "enable back face culling" << std::endl;
+            glEnable(GL_CULL_FACE);
             isBackCulling = true;
         }
     }
@@ -201,7 +201,7 @@ void processInput(GLFWwindow* window)
     {
         if (isBackCulling)
         {
-            std::cout << "disable back face culling" << std::endl;
+            glDisable(GL_CULL_FACE);
             isBackCulling = false;
         }
     }
