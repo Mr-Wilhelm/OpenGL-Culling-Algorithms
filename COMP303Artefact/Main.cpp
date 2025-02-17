@@ -46,8 +46,7 @@ glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 int main()
 {
-    // glfw: initialize and configure
-    // ------------------------------
+    //initialise GLFW
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -57,8 +56,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    // glfw window creation
-    // --------------------
+    //Creating Window
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
@@ -74,16 +72,13 @@ int main()
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
+    //Setting up GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
     stbi_set_flip_vertically_on_load(true);
-
-
 
     Shader ourShader("shader.vs", "shader.fs");
 
@@ -100,8 +95,6 @@ int main()
     //otherwise the model faces are processed, but not draw, which will add to the face count
 
     Model ourModel("Sphere.fbx");
-
-    //Model ourSecondModel("Survival_BackPack_2.fbx");
 
 #pragma endregion
 
@@ -132,7 +125,7 @@ int main()
         DrawModels(ourShader, ourModel);    //Draw the models
 
 
-        //std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
+        std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -144,7 +137,7 @@ int main()
 
 void DrawModels(Shader& ourShader, Model& ourModel)
 {
-    // don't forget to enable shader before setting uniforms
+    //enable shader before setting uniforms
     ourShader.use();
 
     // view/projection transformations
@@ -153,6 +146,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);
 
+//this just takes an already loaded model and adds it to the scene. It does not process a new model.
 #pragma region First Model
     // render the loaded model
     glm::mat4 model = glm::mat4(1.0f);
@@ -174,6 +168,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
 }
 void processInput(GLFWwindow* window)
 {
+    //key and mouse input checks
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -248,8 +243,6 @@ void processInput(GLFWwindow* window)
         
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
@@ -257,10 +250,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
+    //callback for mouse movement
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
@@ -280,9 +272,8 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+    //callback for scroll wheel
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }

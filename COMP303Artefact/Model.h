@@ -55,7 +55,7 @@ private:
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "Assimp Error In Model.h Line 53 " << import.GetErrorString() << std::endl;
+			std::cout << "Assimp Error In Model.h" << import.GetErrorString() << std::endl;
 			return;
 		}
 		directory = path.substr(0, path.find_last_of("/"));
