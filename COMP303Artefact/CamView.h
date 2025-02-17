@@ -10,10 +10,21 @@
 struct Plane
 {
 	//plane normal
-	glm::vec3 normal = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 normal = {0.0f, 1.0f, 0.0f};
 
 	//distance from origin to nearest point on plane
 	float distance = 0.0f;
+
+	Plane() = default;	//just initialise the object and do nothing with it
+	Plane(const glm::vec3& origin, const glm::vec3& norm) : normal(glm::normalize(norm)), distance(glm::dot(normal, origin))	//constructor with origin and norm
+	{
+
+	}
+
+	float DistanceToPlane(const glm::vec3& point) const	//const means it will not modify the state of the object
+	{
+		return glm::dot(normal, point) - distance;
+	}
 };
 struct Frustum
 {
@@ -42,9 +53,16 @@ Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float nea
 #pragma endregion
 
 	Frustum frustum;
-	const float halfVert = far * tanf(fov * 0.5f);
-	const float halfHori = halfVert * aspect;
-	const glm::vec3 pointAtFarPlane = far * cam.Front;
+	const float halfVert = far * tanf(fov * 0.5f);	//half height
+	const float halfHori = halfVert * aspect;	//half width
+	const glm::vec3 pointAtFarPlane = far * cam.Front;	//distance from camera to far plane
 
-	//TODO:: the rest of thsi function
+	frustum.nearFace = { cam.Position + near * cam.Front, cam.Front };
+	frustum.farFace = { cam.Position + pointAtFarPlane, -cam.Front };
+
+	frustum.rightFace = { cam.Position, glm::cross(pointAtFarPlane - cam.Right * halfHori, cam.Up) };
+	frustum.leftFace = { cam.Position, glm::cross(cam.Up, pointAtFarPlane + cam.Right * halfHori) };
+
+	frustum.topFace = { cam.Position, glm::cross(cam.Right, pointAtFarPlane - cam.Up * halfVert) };
+	frustum.bottomFace = { cam.Position, glm::cross(pointAtFarPlane + cam.Up * halfVert, cam.Right) };
 }
