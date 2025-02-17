@@ -24,6 +24,7 @@
 unsigned int GetTextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
 unsigned int numFaces;
+unsigned int numIndices;
 
 class Model
 {
