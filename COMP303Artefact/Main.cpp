@@ -126,7 +126,7 @@ int main()
         DrawModels(ourShader, ourModel);    //Draw the models
 
 
-        std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
+        //std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();

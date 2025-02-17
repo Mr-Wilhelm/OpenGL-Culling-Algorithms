@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CamView.h" />
     <ClInclude Include="Dependencies\Includes\assimp\ai_assert.h" />
     <ClInclude Include="Dependencies\Includes\assimp\anim.h" />
     <ClInclude Include="Dependencies\Includes\assimp\camera.h" />

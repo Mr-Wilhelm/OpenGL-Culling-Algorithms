@@ -1058,6 +1058,9 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files\Class Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CamView.h">
+      <Filter>Header Files\Class Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependencies\Lib\glfw3.lib" />
