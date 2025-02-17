@@ -52,13 +52,14 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
     //Creating Window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -147,23 +148,42 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     ourShader.setMat4("view", view);
 
 //this just takes an already loaded model and adds it to the scene. It does not process a new model.
-#pragma region First Model
-    // render the loaded model
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position
-    model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));	// scale
-    model = glm::rotate(model, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    ourShader.setMat4("model", model);
-    ourModel.Draw(ourShader);
+#pragma region Making a ton of models
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            for (int k = 0; k < 10; k++)
+            {
+                glm::mat4 iteratedModel = glm::mat4(1.0f);
+                iteratedModel = glm::translate(iteratedModel, glm::vec3(50.0f * i, 50.0f * j, 50.0f * k));
+                iteratedModel = glm::scale(iteratedModel, glm::vec3(20.0f, 20.0f, 20.0f));	// scale
+                iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+                ourShader.setMat4("model", iteratedModel);
+                ourModel.Draw(ourShader);
+            }
+        }
+    }
 #pragma endregion
 
-#pragma region Second Model
-    glm::mat4 model2 = glm::mat4(1.0f);
-    model2 = glm::translate(model2, glm::vec3(200.0f, 200.0f, 200.0f));
-    model2 = glm::scale(model2, glm::vec3(100.0f, 100.0f, 100.0f));
-    model2 = glm::rotate(model2, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    ourShader.setMat4("model", model2);
-    ourModel.Draw(ourShader);
+//#pragma region First Model
+//    // render the loaded model
+//    glm::mat4 model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position
+//    model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));	// scale
+//    model = glm::rotate(model, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+//    ourShader.setMat4("model", model);
+//    ourModel.Draw(ourShader);
+//#pragma endregion
+//
+//#pragma region Second Model
+//    glm::mat4 model2 = glm::mat4(1.0f);
+//    model2 = glm::translate(model2, glm::vec3(200.0f, 200.0f, 200.0f));
+//    model2 = glm::scale(model2, glm::vec3(100.0f, 100.0f, 100.0f));
+//    model2 = glm::rotate(model2, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+//    ourShader.setMat4("model", model2);
+//    ourModel.Draw(ourShader);
 #pragma endregion
 }
 void processInput(GLFWwindow* window)
