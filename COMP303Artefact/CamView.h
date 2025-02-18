@@ -17,7 +17,7 @@ protected:
 
 	glm::mat4 globalSpaceMatrix = glm::mat4(1.0f);	//global space information
 
-	bool badFlag = true;	//flag for data mismatch
+	bool dataChanged = true;	//flag for data mismatch
 
 protected:
 
@@ -35,7 +35,76 @@ protected:
 
 public:
 
+	void AssignModelMatrix()
+	{
+		globalSpaceMatrix = GetModelMatrix();
+		dataChanged = false;
+	}
+	void AssignModelMatrix(const glm::mat4& parentModelMatrix)
+	{
+		globalSpaceMatrix = parentModelMatrix * GetModelMatrix();
+		dataChanged = false;
+	}
 
+	void SetPos(const glm::vec3& newPos)
+	{
+		pos = newPos;
+		dataChanged = true;
+	}
+	void SetRot(const glm::vec3& newRot)
+	{
+		rot = newRot;
+		dataChanged = true;
+	}
+	void SetSca(const glm::vec3& newSca)
+	{
+		sca = newSca;
+		dataChanged = true;
+	}
+
+	const glm::vec3& GetGlobalPos() const
+	{
+		return globalSpaceMatrix[3];
+	}
+	const glm::vec3& GetLocalPos() const
+	{
+		return pos;
+	}
+	const glm::vec3& GetLocalRot() const
+	{
+		return rot;
+	}
+	const glm::vec3& GetLocalSca() const
+	{
+		return sca;
+	}
+	const glm::vec3& GetGlobalSca() const
+	{
+		return { glm::length(GetRight()), glm::length(GetUp()), glm::length(GetBack()) };
+	}
+	const glm::mat4& GetModelMatrix() const
+	{
+		return globalSpaceMatrix;
+	}
+
+	glm::vec3 GetRight() const
+	{
+		return globalSpaceMatrix[0];
+	}
+	glm::vec3 GetUp() const
+	{
+		return globalSpaceMatrix[1];
+	}
+	glm::vec3 GetBack() const
+	{
+		return globalSpaceMatrix[2];
+	}
+	glm::vec3 GetFront() const
+	{
+		return -globalSpaceMatrix[2];
+	}
+	
+	bool IsFlagged() const;
 };
 
 struct Plane
@@ -66,7 +135,7 @@ struct Frustum
 };
 struct Volume
 {
-	virtual bool isOnFrustum(const Frustum& camVolume, const Transform& modelTransform)
+	virtual bool isOnFrustum(const Frustum& camVolume, const Transform& modelTransform);
 };
 
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)
