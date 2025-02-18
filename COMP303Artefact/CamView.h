@@ -7,6 +7,37 @@
 
 #include "Camera.h"
 
+class Transform
+{
+protected:
+
+	glm::vec3 pos = { 0.0f, 0.0f, 0.0f };	//transform position
+	glm::vec3 rot = { 0.0f, 0.0f, 0.0f };	//transform rotation (in degrees)
+	glm::vec3 sca = { 1.0f, 1.0f, 1.0f };	//transform scale
+
+	glm::mat4 globalSpaceMatrix = glm::mat4(1.0f);	//global space information
+
+	bool badFlag = true;	//flag for data mismatch
+
+protected:
+
+	glm::mat4 GetModelMatrix()	//gets the position, rotation and scale of the model
+	{
+		//creating rotation matrices around each axis
+		const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f), glm::radians(rot.x), glm::vec3(1.0f, 0.0f, 0.0f));	
+		const glm::mat4 transformY = glm::rotate(glm::mat4(1.0f), glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 0.0f));	
+		const glm::mat4 transformZ = glm::rotate(glm::mat4(1.0f), glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));	
+
+		const glm::mat4 rotationMatrix = transformY * transformX * transformZ;	//combining all rotation axes to make a full rotation matrix
+
+		return glm::translate(glm::mat4(1.0f), pos) * rotationMatrix * glm::scale(glm::mat4(1.0f), sca);	//return the position, rotation matrix, and scale
+	}
+
+public:
+
+
+};
+
 struct Plane
 {
 	//plane normal
@@ -33,6 +64,11 @@ struct Frustum
 	Plane rightFace; Plane leftFace;
 	Plane farFace; Plane nearFace;
 };
+struct Volume
+{
+	virtual bool isOnFrustum(const Frustum& camVolume, const Transform& modelTransform)
+};
+
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)
 {
 #pragma region What this function does and why
@@ -57,12 +93,14 @@ Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float nea
 	const float halfHori = halfVert * aspect;	//half width
 	const glm::vec3 pointAtFarPlane = far * cam.Front;	//distance from camera to far plane
 
-	frustum.nearFace = { cam.Position + near * cam.Front, cam.Front };
-	frustum.farFace = { cam.Position + pointAtFarPlane, -cam.Front };
+	frustum.nearFace = { cam.Position + near * cam.Front, cam.Front };	//assigning the near face
+	frustum.farFace = { cam.Position + pointAtFarPlane, -cam.Front };	//assigning the far face
 
-	frustum.rightFace = { cam.Position, glm::cross(pointAtFarPlane - cam.Right * halfHori, cam.Up) };
-	frustum.leftFace = { cam.Position, glm::cross(cam.Up, pointAtFarPlane + cam.Right * halfHori) };
+	frustum.rightFace = { cam.Position, glm::cross(pointAtFarPlane - cam.Right * halfHori, cam.Up) };	//assigning the right face
+	frustum.leftFace = { cam.Position, glm::cross(cam.Up, pointAtFarPlane + cam.Right * halfHori) };	//assigning the left face
 
-	frustum.topFace = { cam.Position, glm::cross(cam.Right, pointAtFarPlane - cam.Up * halfVert) };
-	frustum.bottomFace = { cam.Position, glm::cross(pointAtFarPlane + cam.Up * halfVert, cam.Right) };
+	frustum.topFace = { cam.Position, glm::cross(cam.Right, pointAtFarPlane - cam.Up * halfVert) };	//assigning the top face
+	frustum.bottomFace = { cam.Position, glm::cross(pointAtFarPlane + cam.Up * halfVert, cam.Right) };	//assigning the bottom face
+
+	return frustum;
 }
