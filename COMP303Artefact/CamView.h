@@ -249,7 +249,66 @@ struct SquareBoundingBox : public ObjectBound
 };
 struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, info found here: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
 {
-		//TODO: Add some code here
+	glm::vec3 center{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 extents{ 0.0f, 0.0f, 0.0f };
+
+	AABB(const glm::vec3& minExtent, const glm::vec3& maxExtent) : ObjectBound{}, center{ (maxExtent + minExtent) * 0.5f }, extents{ maxExtent.x - center.x, maxExtent.y - center.y, maxExtent.z - center.z }
+	{
+
+	}
+
+	AABB(const glm::vec3& boxCenter, float projectionX, float projectionY, float projectionZ) : ObjectBound{}, center{ boxCenter }, extents{ projectionX, projectionY, projectionZ }
+	{
+
+	}
+
+	std::array<glm::vec3, 8> GetVertices() const
+	{
+		std::array<glm::vec3, 8> vertices;
+		vertices[0] = { center.x - extents.x, center.y - extents.y, center.z - extents.z };
+		vertices[1] = { center.x + extents.x, center.y - extents.y, center.z - extents.z };
+		vertices[2] = { center.x - extents.x, center.y + extents.y, center.z - extents.z };
+		vertices[3] = { center.x + extents.x, center.y + extents.y, center.z - extents.z };
+		vertices[4] = { center.x - extents.x, center.y - extents.y, center.z + extents.z };
+		vertices[5] = { center.x + extents.x, center.y - extents.y, center.z + extents.z };
+		vertices[6] = { center.x - extents.x, center.y + extents.y, center.z + extents.z };
+		vertices[7] = { center.x + extents.x, center.y + extents.y, center.z + extents.z };
+		return vertices;
+	}
+
+	bool IsInFrontOfPlane(const Plane& plane) const final
+	{
+		const float radius = extents.x * std::abs(plane.normal.x) + extents.y * std::abs(plane.normal.y) + extents.z * std::abs(plane.normal.z);
+		return -radius <= plane.DistanceToPlane(center);
+	}
+
+	bool IsInView(const Frustum& camView, const Transform& transform) const final
+	{
+		const glm::vec3 globalCenter{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };	//global scale
+
+		//getting the x y and z extents
+		const glm::vec3 extentX = transform.GetRight() * extents.x;
+		const glm::vec3 extentY = transform.GetUp() * extents.y;
+		const glm::vec3 extentZ = transform.GetFront() * extents.z;
+
+		//calculate projecting the dimensions of the view frustum
+		const float projectionX =
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentZ));
+
+		const float projectionY =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentZ));
+
+		const float projectionZ =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentZ));
+
+		const AABB globalAABB(globalCenter, projectionX, projectionY, projectionZ);
+	}
 };
 
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)
