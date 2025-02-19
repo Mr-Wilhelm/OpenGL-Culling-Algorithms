@@ -4,6 +4,7 @@
 #include <list>
 #include <array>
 #include <memory>
+#include <iostream>
 
 #include "Camera.h"
 
@@ -133,9 +134,107 @@ struct Frustum
 	Plane rightFace; Plane leftFace;
 	Plane farFace; Plane nearFace;
 };
-struct Volume
+
+struct ObjectBound
 {
-	virtual bool isOnFrustum(const Frustum& camVolume, const Transform& modelTransform);
+	virtual bool IsInView(const Frustum& camView, const Transform& transform) const = 0;
+
+	virtual bool IsInFrontOfPlane(const Plane& plane) const = 0;
+
+	bool IsInView(const Frustum& camVolume) const	//return all faces of the view frustum
+	{
+		return (IsInFrontOfPlane(camVolume.leftFace) &&
+			IsInFrontOfPlane(camVolume.rightFace) &&
+			IsInFrontOfPlane(camVolume.topFace) &&
+			IsInFrontOfPlane(camVolume.bottomFace) &&
+			IsInFrontOfPlane(camVolume.nearFace) &&
+			IsInFrontOfPlane(camVolume.farFace));
+	};
+};
+struct Sphere : public ObjectBound	//inherits from the ObjectBound struct
+{
+	glm::vec3 center{ 0.0f, 0.0f, 0.0f };	//sphere origin
+	float radius{ 0.0f };	//sphere radius
+
+	//constructor, allows us to create sphere objects
+	Sphere(const glm::vec3& sphereCenter, float sphereRadius) : ObjectBound{}, center{ sphereCenter }, radius{ sphereRadius }
+	{
+
+	}
+
+	//const - function does not modify member variables of the struct, more efficient than changing the overall variable
+	//final - function cannot be overridden by any derived classes
+	
+	//takes a plane as an input, and checks if anything is intersecting it
+	bool IsInFrontOfPlane(const Plane& plane) const final	
+	{
+		return plane.DistanceToPlane(center) > -radius;	//return true if in front of the plane
+	}
+
+	//check if the sphere is within view
+	bool IsInView(const Frustum& camView, const Transform& transform) const final
+	{
+		const glm::vec3 scale = transform.GetGlobalSca();	//global scale
+		const glm::vec3 center{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };	//convert to a vec4 and apply model transformation
+		const float scaleMax = std::max(std::max(scale.x, scale.y), scale.z);	//get maximum scaling factor
+
+		Sphere sphere(center, radius * (scaleMax * 0.5f));	//create a new sphere object
+		
+		//return the result of the IsInFrontOfPlane function for each face
+		return (sphere.IsInFrontOfPlane(camView.leftFace) &&
+			sphere.IsInFrontOfPlane(camView.rightFace) &&
+			sphere.IsInFrontOfPlane(camView.topFace) &&
+			sphere.IsInFrontOfPlane(camView.bottomFace) &&
+			sphere.IsInFrontOfPlane(camView.nearFace) &&
+			sphere.IsInFrontOfPlane(camView.farFace));
+	};
+};
+struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, info found here: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
+{
+	glm::vec3 center{ 0.0f, 0.0f, 0.0f };	//center of the bounding box
+	float extent{ 0.0f };	//half the size of the box (the extent)
+
+	//constructor allows us to create these boxes
+	AABB(const glm::vec3& boxCenter, float boxExtent) : ObjectBound{}, center{ boxCenter }, extent{ boxExtent }
+	{
+
+	}
+
+	//check if the box is in front of a plane
+	bool IsInFrontOfPlane(const Plane& plane) const final
+	{
+		//projection interval radius
+		const float radius = extent * (std::abs(plane.normal.x) + std::abs(plane.normal.y) + std::abs(plane.normal.z));
+		return -radius <= plane.DistanceToPlane(center);	//return a check of whether or not it is in front
+	}
+
+	bool IsInView(const Frustum& camView, const Transform& transform) const final
+	{
+		const glm::vec3 globalCenter{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };
+
+		//getting the x y and z extents
+		const glm::vec3 extentX = transform.GetRight() * extent;
+		const glm::vec3 extentY = transform.GetUp() * extent;
+		const glm::vec3 extentZ = transform.GetFront() * extent;
+
+		//calculate projecting the dimensions of the view frustum
+		const float projectionX =
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentZ));
+
+		const float projectionY =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentZ));
+
+		const float projectionZ =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentZ));
+
+		const AABB boundingBox(globalCenter, projectionX, projectionY, projectionZ);
+	};
 };
 
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)
