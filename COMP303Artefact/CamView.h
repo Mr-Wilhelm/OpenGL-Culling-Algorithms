@@ -357,3 +357,43 @@ Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float nea
 
 	return frustum;
 }
+
+AABB CreateAABB(const Model& model)	//take a model as in input, and create an AABB for it
+{
+	glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());	//ensure any vertex is smaller than this value
+	glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());	//ensure any vertex is larger than this value
+
+	for (auto&& mesh : model.meshes)	//iterate through all meshes
+	{
+		for (auto&& vertex : mesh.vertices)	//iterate through all vertices in the meshes
+		{
+			//update the minimum coordinates
+			minAABB.x = std::min(minAABB.x, vertex.pos.x);
+			minAABB.y = std::min(minAABB.y, vertex.pos.y);
+			minAABB.z = std::min(minAABB.z, vertex.pos.z);
+
+			//update the maximum coordinates
+			maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
+			maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
+			maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+		}
+	}
+	return AABB(minAABB, maxAABB);
+}
+
+class BoundingBoxObjectClass	//TODO finish this
+{
+public:
+	std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
+	BoundingBoxObjectClass* parent = nullptr;
+
+	Transform transform;
+
+	Model* pModel = nullptr;
+	std::unique_ptr<AABB> boundingVolume;
+
+	BoundingBoxObjectClass(Model& model) : pModel{ &model }
+	{
+		//boundingVolume = std::make_unique<AABB>(generateAABB(model));
+	}
+};

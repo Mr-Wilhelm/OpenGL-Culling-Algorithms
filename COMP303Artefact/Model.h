@@ -30,6 +30,10 @@ class Model
 {
 public:
 
+	std::vector<Texture> loadedTextures;
+	std::vector<Mesh> meshes;
+	std::string directory;
+
 	Model(std::string const &path)
 	{
 		SpawnModel(path);
@@ -43,9 +47,7 @@ public:
 	}
 
 private:
-	std::vector<Texture> loadedTextures;
-	std::vector<Mesh> meshes;
-	std::string directory;
+
 	
 
 	void SpawnModel(std::string path)
