@@ -249,14 +249,16 @@ struct SquareBoundingBox : public ObjectBound
 };
 struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, info found here: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
 {
-	glm::vec3 center{ 0.0f, 0.0f, 0.0f };
-	glm::vec3 extents{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 center{ 0.0f, 0.0f, 0.0f };	//center of the bounding box
+	glm::vec3 extents{ 0.0f, 0.0f, 0.0f };	//extents of the bounding box
 
+	//constructor
 	AABB(const glm::vec3& minExtent, const glm::vec3& maxExtent) : ObjectBound{}, center{ (maxExtent + minExtent) * 0.5f }, extents{ maxExtent.x - center.x, maxExtent.y - center.y, maxExtent.z - center.z }
 	{
 
 	}
 
+	//constructor using different variables
 	AABB(const glm::vec3& boxCenter, float projectionX, float projectionY, float projectionZ) : ObjectBound{}, center{ boxCenter }, extents{ projectionX, projectionY, projectionZ }
 	{
 
@@ -264,7 +266,7 @@ struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, in
 
 	std::array<glm::vec3, 8> GetVertices() const
 	{
-		std::array<glm::vec3, 8> vertices;
+		std::array<glm::vec3, 8> vertices;	//get an array for the vertices of the extents, populate and return
 		vertices[0] = { center.x - extents.x, center.y - extents.y, center.z - extents.z };
 		vertices[1] = { center.x + extents.x, center.y - extents.y, center.z - extents.z };
 		vertices[2] = { center.x - extents.x, center.y + extents.y, center.z - extents.z };
@@ -276,6 +278,7 @@ struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, in
 		return vertices;
 	}
 
+	//typical script to check if in front of a plane
 	bool IsInFrontOfPlane(const Plane& plane) const final
 	{
 		const float radius = extents.x * std::abs(plane.normal.x) + extents.y * std::abs(plane.normal.y) + extents.z * std::abs(plane.normal.z);
@@ -307,8 +310,16 @@ struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, in
 			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentY)) +
 			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentZ));
 
-		const AABB globalAABB(globalCenter, projectionX, projectionY, projectionZ);
-	}
+		const AABB AABBObject(globalCenter, projectionX, projectionY, projectionZ);	//create an AABB object
+
+		return (	//run the function on all the faces
+			AABBObject.IsInFrontOfPlane(camView.leftFace) &&
+			AABBObject.IsInFrontOfPlane(camView.rightFace) &&
+			AABBObject.IsInFrontOfPlane(camView.topFace) &&
+			AABBObject.IsInFrontOfPlane(camView.bottomFace) &&
+			AABBObject.IsInFrontOfPlane(camView.nearFace) &&
+			AABBObject.IsInFrontOfPlane(camView.farFace));
+	};
 };
 
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)

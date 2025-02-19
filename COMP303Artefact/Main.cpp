@@ -9,6 +9,10 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "CamView.h"
+
+#include<list>
+#include<memory>
 
 #include <iostream>
 
@@ -125,8 +129,6 @@ int main()
 
         DrawModels(ourShader, ourModel);    //Draw the models
 
-
-        //std::cout << "Total Number of Faces on the mesh: " << numFaces << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
