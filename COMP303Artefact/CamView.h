@@ -189,13 +189,13 @@ struct Sphere : public ObjectBound	//inherits from the ObjectBound struct
 			sphere.IsInFrontOfPlane(camView.farFace));
 	};
 };
-struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, info found here: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
+struct SquareBoundingBox : public ObjectBound
 {
 	glm::vec3 center{ 0.0f, 0.0f, 0.0f };	//center of the bounding box
 	float extent{ 0.0f };	//half the size of the box (the extent)
 
 	//constructor allows us to create these boxes
-	AABB(const glm::vec3& boxCenter, float boxExtent) : ObjectBound{}, center{ boxCenter }, extent{ boxExtent }
+	SquareBoundingBox(const glm::vec3& boxCenter, float boxExtent) : ObjectBound{}, center{ boxCenter }, extent{ boxExtent }
 	{
 
 	}
@@ -233,8 +233,23 @@ struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, in
 			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentY)) +
 			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentZ));
 
-		const AABB boundingBox(globalCenter, projectionX, projectionY, projectionZ);
+		//create a new bounding box object
+		const SquareBoundingBox boxObject(globalCenter, std::max(std::max(projectionX, projectionY), projectionZ));
+
+		//return the value of the bounding boxes being in front of or behind things
+		return (
+			boxObject.IsInFrontOfPlane(camView.leftFace) &&
+			boxObject.IsInFrontOfPlane(camView.rightFace) &&
+			boxObject.IsInFrontOfPlane(camView.topFace) &&
+			boxObject.IsInFrontOfPlane(camView.bottomFace) &&
+			boxObject.IsInFrontOfPlane(camView.nearFace) &&
+			boxObject.IsInFrontOfPlane(camView.farFace)
+			);
 	};
+};
+struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, info found here: https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
+{
+		//TODO: Add some code here
 };
 
 Frustum CreateCameraBounds(const Camera& cam, float aspect, float fov, float near, float far)
