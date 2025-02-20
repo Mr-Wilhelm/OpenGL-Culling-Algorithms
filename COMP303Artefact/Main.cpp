@@ -40,6 +40,7 @@ Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+float farPlane;
 
 // timing
 float deltaTime = 0.0f;
@@ -109,20 +110,23 @@ int main()
     Model ourModel("Sphere.fbx");
     BoundingBoxObjectClass ourBoundingBox(ourModel);
     ourBoundingBox.transform.SetPos({ 0, 0, 0 });
-    const float scale = 1.0;
+    const float scale = 5.0;
     ourBoundingBox.transform.SetSca({ scale, scale, scale });
 
     {
         BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
-        for (unsigned int i = 0; i < 20; ++i)
-        {
-            for (unsigned int j = 0; j < 20; ++j)
-            {
-                ourBoundingBox.AddChild(ourModel);
-                lastBoundingBox = ourBoundingBox.children.back().get();
 
-                //setting transform values
-                lastBoundingBox->transform.SetPos({ i * 10.0f - 100.0f, 0.0f, j * 10.0f - 100.0f });
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                for (int k = 0; k < 10; k++)
+                {
+                    ourBoundingBox.AddChild(ourModel);
+                    lastBoundingBox = ourBoundingBox.children.back().get();
+
+                    lastBoundingBox->transform.SetPos({ i * 5.0f, j * 5.0f, k * 5.0f });
+                }
             }
         }
     }
@@ -191,22 +195,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
 
 //this just takes an already loaded model and adds it to the scene. It does not process a new model.
 #pragma region Making a ton of models
-    for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 10; j++)
-        {
-            for (int k = 0; k < 10; k++)
-            {
-                glm::mat4 iteratedModel = glm::mat4(1.0f);
-                iteratedModel = glm::translate(iteratedModel, glm::vec3(50.0f * i, 50.0f * j, 50.0f * k));
-                iteratedModel = glm::scale(iteratedModel, glm::vec3(20.0f, 20.0f, 20.0f));	// scale
-                iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-                ourShader.setMat4("model", iteratedModel);
-                ourModel.Draw(ourShader);
-            }
-        }
-    }
 #pragma endregion
 
 //#pragma region First Model
@@ -264,6 +253,7 @@ void processInput(GLFWwindow* window)
         if (!isFrustumCulling)
         {
             std::cout << "enable frustum culling" << std::endl;
+            farPlane = 1000000.0f;
             isFrustumCulling = true;
         }
     }
@@ -272,6 +262,7 @@ void processInput(GLFWwindow* window)
         if (isFrustumCulling)
         {
             std::cout << "disable frustum culling" << std::endl;
+            farPlane = 0.101f;
             isFrustumCulling = false;
         }
     }
