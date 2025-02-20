@@ -105,7 +105,10 @@ public:
 		return -globalSpaceMatrix[2];
 	}
 	
-	bool IsFlagged() const;
+	bool IsFlagged() const
+	{
+		return dataChanged;
+	}
 };
 
 struct Plane

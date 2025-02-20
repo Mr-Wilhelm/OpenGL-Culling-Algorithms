@@ -154,14 +154,21 @@ int main()
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        DrawModels(ourShader, ourModel);    //Draw the models
+        //enable shader before setting uniforms
+        ourShader.use();
 
+        // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000000.0f);
         const Frustum camView = CreateCameraBounds(camera, (float)SCR_WIDTH / (float)SCR_HEIGHT, glm::radians(camera.Zoom), 0.1f, 10000000.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
 
         unsigned int total = 0, display = 0;
         ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
         std::cout << "total processed in CPU: " << total << " / total sent to GPU: " << display << std::endl;
+
+        //ourBoundingBox.UpdateSelfAndChild();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
