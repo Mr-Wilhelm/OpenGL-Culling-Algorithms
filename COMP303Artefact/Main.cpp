@@ -16,6 +16,12 @@
 
 #include <iostream>
 
+class BoundingBoxObject : public Model //declare a bounding box inheriting from model
+{
+public:
+    std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
+    BoundingBoxObjectClass* parent;
+};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -30,6 +36,7 @@ const unsigned int SCR_HEIGHT = 800;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -100,6 +107,26 @@ int main()
     //otherwise the model faces are processed, but not draw, which will add to the face count
 
     Model ourModel("Sphere.fbx");
+    BoundingBoxObjectClass ourBoundingBox(ourModel);
+    ourBoundingBox.transform.SetPos({ 0, 0, 0 });
+    const float scale = 1.0;
+    ourBoundingBox.transform.SetSca({ scale, scale, scale });
+
+    {
+        BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
+        for (unsigned int i = 0; i < 20; ++i)
+        {
+            for (unsigned int j = 0; j < 20; ++j)
+            {
+                ourBoundingBox.AddChild(ourModel);
+                lastBoundingBox = ourBoundingBox.children.back().get();
+
+                //setting transform values
+                lastBoundingBox->transform.SetPos({ i * 10.0f - 100.0f, 0.0f, j * 10.0f - 100.0f });
+            }
+        }
+    }
+    ourBoundingBox.UpdateSelfAndChild();
 
 #pragma endregion
 
@@ -149,6 +176,8 @@ void DrawModels(Shader& ourShader, Model& ourModel)
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);
 
+    unsigned int i = 0, display = 0;
+
 //this just takes an already loaded model and adds it to the scene. It does not process a new model.
 #pragma region Making a ton of models
     for (int i = 0; i < 10; i++)
@@ -186,7 +215,7 @@ void DrawModels(Shader& ourShader, Model& ourModel)
 //    model2 = glm::rotate(model2, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 //    ourShader.setMat4("model", model2);
 //    ourModel.Draw(ourShader);
-#pragma endregion
+//#pragma endregion
 }
 void processInput(GLFWwindow* window)
 {

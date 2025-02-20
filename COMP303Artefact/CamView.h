@@ -421,6 +421,75 @@ public:
 
 	AABB GetAABBGlobalPos()
 	{
+		//get global position
 		const glm::vec3 globalCenter{ transform.ReturnModelMatrix() * glm::vec4(boundingVolume->center, 1.0f) };
+
+		//getting the x y and z extents
+		const glm::vec3 extentX = transform.GetRight() * boundingVolume->extents.x;
+		const glm::vec3 extentY = transform.GetUp() * boundingVolume->extents.y;
+		const glm::vec3 extentZ = transform.GetFront() * boundingVolume->extents.z;
+
+		//getting the x y and z projection
+		const float projectionX =
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 1.0f, 0.0f, 0.0f }, extentZ));
+
+		const float projectionY =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 1.0f, 0.0f }, extentZ));
+
+		const float projectionZ =
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentX)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentY)) +
+			std::abs(glm::dot(glm::vec3{ 0.0f, 0.0f, 1.0f }, extentZ));
+
+		//creating a AABB with those parameters
+		return AABB(globalCenter, projectionX, projectionY, projectionZ);
 	}
+
+	//variadic templates, i dont fully understand them tbh - https://en.cppreference.com/w/cpp/language/pack
+	//but this is adding a child, and argument input is the argument of any constructor that is created?
+	template<typename... TArgs>
+	void AddChild(TArgs&... args)
+	{
+		children.emplace_back(std::make_unique<BoundingBoxObjectClass>(args...));	//create a bounding box using argumnets passed
+		children.back()->parent = this;	//parent the child object to this
+	}
+	
+	//update self and child transform
+	void UpdateSelfAndChild()
+	{
+		if (transform.IsFlagged())	//jcheck if flagged for an update
+		{
+			ForceUpdatePos();
+			return;
+		}
+
+		for (auto&& child : children)
+		{
+			child->UpdateSelfAndChild();	//update all chldren position
+		}
+	}
+
+	//force the update of the position
+	void ForceUpdatePos()
+	{
+		if (parent)
+		{
+			transform.AssignModelMatrix(parent->transform.ReturnModelMatrix());	//set transform of the parents matrix
+		}
+		else
+		{
+			transform.AssignModelMatrix();	//directly assing matrix data
+		}
+
+		for (auto&& child : children)
+		{
+			child->ForceUpdatePos();
+		}
+	}
+
+
 };
