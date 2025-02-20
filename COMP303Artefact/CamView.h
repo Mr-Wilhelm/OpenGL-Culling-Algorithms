@@ -491,5 +491,20 @@ public:
 		}
 	}
 
+	void DrawSelfAndChild(const Frustum& frustum, Shader& ourShader, unsigned int& display, unsigned int& total)
+	{
+		if (boundingVolume->IsInView(frustum, transform))
+		{
+			ourShader.setMat4("model", transform.ReturnModelMatrix());
+			pModel->Draw(ourShader);
+			display++;
+		}
+		total++;
+
+		for (auto& child : children)
+		{
+			child->DrawSelfAndChild(frustum, ourShader, display, total);
+		}
+	}
 
 };
