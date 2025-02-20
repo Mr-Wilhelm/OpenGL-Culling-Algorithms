@@ -83,7 +83,7 @@ public:
 	{
 		return { glm::length(GetRight()), glm::length(GetUp()), glm::length(GetBack()) };
 	}
-	const glm::mat4& GetModelMatrix() const
+	const glm::mat4& ReturnModelMatrix() const
 	{
 		return globalSpaceMatrix;
 	}
@@ -175,7 +175,7 @@ struct Sphere : public ObjectBound	//inherits from the ObjectBound struct
 	bool IsInView(const Frustum& camView, const Transform& transform) const final
 	{
 		const glm::vec3 scale = transform.GetGlobalSca();	//global scale
-		const glm::vec3 center{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };	//convert to a vec4 and apply model transformation
+		const glm::vec3 center{ transform.ReturnModelMatrix() * glm::vec4(center, 1.0f) };	//convert to a vec4 and apply model transformation
 		const float scaleMax = std::max(std::max(scale.x, scale.y), scale.z);	//get maximum scaling factor
 
 		Sphere sphere(center, radius * (scaleMax * 0.5f));	//create a new sphere object
@@ -210,7 +210,7 @@ struct SquareBoundingBox : public ObjectBound
 
 	bool IsInView(const Frustum& camView, const Transform& transform) const final
 	{
-		const glm::vec3 globalCenter{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };
+		const glm::vec3 globalCenter{ transform.ReturnModelMatrix() * glm::vec4(center, 1.0f) };
 
 		//getting the x y and z extents
 		const glm::vec3 extentX = transform.GetRight() * extent;
@@ -287,7 +287,7 @@ struct AABB : public ObjectBound	//AABB stands for Axis Aligned Bounding Box, in
 
 	bool IsInView(const Frustum& camView, const Transform& transform) const final
 	{
-		const glm::vec3 globalCenter{ transform.GetModelMatrix() * glm::vec4(center, 1.0f) };	//global scale
+		const glm::vec3 globalCenter{ transform.ReturnModelMatrix() * glm::vec4(center, 1.0f) };	//global scale
 
 		//getting the x y and z extents
 		const glm::vec3 extentX = transform.GetRight() * extents.x;
@@ -381,6 +381,28 @@ AABB CreateAABB(const Model& model)	//take a model as in input, and create an AA
 	return AABB(minAABB, maxAABB);
 }
 
+Sphere CreateSphereBoundingVolume(const Model& model)
+{
+	glm::vec3 minAABB = glm::vec3(std::numeric_limits<float>::max());
+	glm::vec3 maxAABB = glm::vec3(std::numeric_limits<float>::min());
+	for (auto&& mesh : model.meshes)
+	{
+		for (auto&& vertex : mesh.vertices)
+		{
+			//update the minimum coordinates
+			minAABB.x = std::min(minAABB.x, vertex.pos.x);
+			minAABB.y = std::min(minAABB.y, vertex.pos.y);
+			minAABB.z = std::min(minAABB.z, vertex.pos.z);
+
+			//update the maximum coordinates
+			maxAABB.x = std::max(maxAABB.x, vertex.pos.x);
+			maxAABB.y = std::max(maxAABB.y, vertex.pos.y);
+			maxAABB.z = std::max(maxAABB.z, vertex.pos.z);
+		}
+	}
+	return Sphere((maxAABB + minAABB) * 0.5f, glm::length(minAABB - maxAABB));
+}
+
 class BoundingBoxObjectClass	//TODO finish this
 {
 public:
@@ -394,6 +416,11 @@ public:
 
 	BoundingBoxObjectClass(Model& model) : pModel{ &model }
 	{
-		//boundingVolume = std::make_unique<AABB>(generateAABB(model));
+		boundingVolume = std::make_unique<AABB>(CreateAABB(model));
+	}
+
+	AABB GetAABBGlobalPos()
+	{
+		const glm::vec3 globalCenter{ transform.ReturnModelMatrix() * glm::vec4(boundingVolume->center, 1.0f) };
 	}
 };
