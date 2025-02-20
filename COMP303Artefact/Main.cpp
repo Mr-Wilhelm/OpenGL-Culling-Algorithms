@@ -158,6 +158,13 @@ int main()
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //-----------------------------------------------------------------------------------------------------------------------------
+        //|                                                                                                                           |
+        //|        get the old drawing code and the new drawing code. Toggle between the two to enable and disable it                 |   
+        //|                                                                                                                           |
+        //-----------------------------------------------------------------------------------------------------------------------------
+        
+
         //enable shader before setting uniforms
         ourShader.use();
 
