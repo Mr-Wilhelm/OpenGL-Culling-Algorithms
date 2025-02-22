@@ -53,6 +53,11 @@ bool isBackCulling = false;
 bool isFrustumCulling = false;
 bool isOcclusionCulling = false;
 
+//object cube variables
+int xAxisObjects = 25;
+int yAxisObjects = 25;
+int zAxisObjects = 25;
+
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -96,7 +101,6 @@ int main()
     Shader ourShader("shader.vs", "shader.fs");
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);     // draw in wireframe
-    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
     glCullFace(GL_BACK);    //tell opengl to cull the back faces
@@ -116,11 +120,11 @@ int main()
     {
         BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < xAxisObjects; i++)
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < yAxisObjects; j++)
             {
-                for (int k = 0; k < 10; k++)
+                for (int k = 0; k < zAxisObjects; k++)
                 {
                     ourBoundingBox.AddChild(ourModel);
                     lastBoundingBox = ourBoundingBox.children.back().get();
@@ -158,13 +162,6 @@ int main()
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //-----------------------------------------------------------------------------------------------------------------------------
-        //|                                                                                                                           |
-        //|        get the old drawing code and the new drawing code. Toggle between the two to enable and disable it                 |   
-        //|                                                                                                                           |
-        //-----------------------------------------------------------------------------------------------------------------------------
-        
-
         //enable shader before setting uniforms
         ourShader.use();
 
@@ -176,8 +173,31 @@ int main()
         ourShader.setMat4("view", view);
 
         unsigned int total = 0, display = 0;
-        ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
-        std::cout << "total processed in CPU: " << total << " / total sent to GPU: " << display << std::endl;
+        if (isFrustumCulling)
+        {
+            ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+            //std::cout << "total processed in CPU: " << total << " / total sent to GPU: " << display << std::endl;
+        }
+        else
+        {
+            for (int i = 0; i < xAxisObjects; i++)
+            {
+                for (int j = 0; j < yAxisObjects; j++)
+                {
+                    for (int k = 0; k < zAxisObjects; k++)
+                    {
+                        glm::mat4 iteratedModel = glm::mat4(1.0f);
+                        iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
+                        iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
+                        iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+                        ourShader.setMat4("model", iteratedModel);
+                        ourModel.Draw(ourShader);
+                    }
+                }
+            }
+        }
+
 
         //ourBoundingBox.UpdateSelfAndChild();
 
@@ -187,42 +207,6 @@ int main()
 
     glfwTerminate();
     return 0;
-}
-
-void DrawModels(Shader& ourShader, Model& ourModel)
-{
-    //enable shader before setting uniforms
-    ourShader.use();
-
-    // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000000.0f);
-    glm::mat4 view = camera.GetViewMatrix();
-    ourShader.setMat4("projection", projection);
-    ourShader.setMat4("view", view);
-
-//this just takes an already loaded model and adds it to the scene. It does not process a new model.
-#pragma region Making a ton of models
-
-#pragma endregion
-
-//#pragma region First Model
-//    // render the loaded model
-//    glm::mat4 model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position
-//    model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));	// scale
-//    model = glm::rotate(model, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-//    ourShader.setMat4("model", model);
-//    ourModel.Draw(ourShader);
-//#pragma endregion
-//
-//#pragma region Second Model
-//    glm::mat4 model2 = glm::mat4(1.0f);
-//    model2 = glm::translate(model2, glm::vec3(200.0f, 200.0f, 200.0f));
-//    model2 = glm::scale(model2, glm::vec3(100.0f, 100.0f, 100.0f));
-//    model2 = glm::rotate(model2, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-//    ourShader.setMat4("model", model2);
-//    ourModel.Draw(ourShader);
-//#pragma endregion
 }
 void processInput(GLFWwindow* window)
 {
@@ -260,7 +244,6 @@ void processInput(GLFWwindow* window)
         if (!isFrustumCulling)
         {
             std::cout << "enable frustum culling" << std::endl;
-            farPlane = 1000000.0f;
             isFrustumCulling = true;
         }
     }
@@ -269,7 +252,6 @@ void processInput(GLFWwindow* window)
         if (isFrustumCulling)
         {
             std::cout << "disable frustum culling" << std::endl;
-            farPlane = 0.101f;
             isFrustumCulling = false;
         }
     }

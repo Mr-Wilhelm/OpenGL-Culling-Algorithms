@@ -406,7 +406,7 @@ Sphere CreateSphereBoundingVolume(const Model& model)
 	return Sphere((maxAABB + minAABB) * 0.5f, glm::length(minAABB - maxAABB));
 }
 
-class BoundingBoxObjectClass	//TODO finish this
+class BoundingBoxObjectClass
 {
 public:
 	std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
