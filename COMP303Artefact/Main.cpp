@@ -40,7 +40,7 @@ Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
-float farPlane;
+float farPlane = 1000.0f;
 
 // timing
 float deltaTime = 0.0f;
@@ -51,7 +51,7 @@ bool wireFrame = false;
 //culling bools
 bool isBackCulling = false;
 bool isFrustumCulling = false;
-bool isOcclusionCulling = false;
+bool isZCulling = false;
 
 //object cube variables
 int xAxisObjects = 25;
@@ -102,6 +102,8 @@ int main()
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);     // draw in wireframe
     glEnable(GL_DEPTH_TEST);
+
+    glDepthFunc(GL_LESS);
 
     glCullFace(GL_BACK);    //tell opengl to cull the back faces
     glFrontFace(GL_FRONT);  //tell opengl which faces are the front faces
@@ -166,8 +168,8 @@ int main()
         ourShader.use();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000000.0f);
-        const Frustum camView = CreateCameraBounds(camera, (float)SCR_WIDTH / (float)SCR_HEIGHT, glm::radians(camera.Zoom), 0.1f, 10000000.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, farPlane);
+        const Frustum camView = CreateCameraBounds(camera, (float)SCR_WIDTH / (float)SCR_HEIGHT, glm::radians(camera.Zoom), 0.1f, farPlane);
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
@@ -186,8 +188,20 @@ int main()
                 {
                     for (int k = 0; k < zAxisObjects; k++)
                     {
+                        glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
+
+                        if (isZCulling)
+                        {
+                            glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+
+                            if (viewPos.z < farPlane)
+                            {
+                                continue;   //skip the rendering process of the model. This prevents it from being drawn outright
+                            }
+                        }
+
                         glm::mat4 iteratedModel = glm::mat4(1.0f);
-                        iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
+                        iteratedModel = glm::translate(iteratedModel, iteratedModelPos);
                         iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
                         iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -257,18 +271,20 @@ void processInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
     {
-        if (!isOcclusionCulling)
+        if (!isZCulling)
         {
-            std::cout << "enable occlusion culling" << std::endl;
-            isOcclusionCulling = true;
+            std::cout << "enable z-culling culling" << std::endl;
+            isZCulling = true;
+            farPlane = 1000.0f;
         }
     }
     if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
     {
-        if (isOcclusionCulling)
+        if (isZCulling)
         {
-            std::cout << "disable occlusion culling" << std::endl;
-            isOcclusionCulling = false;
+            std::cout << "disable z-culling culling" << std::endl;
+            isZCulling = false;
+            farPlane = 10000000000000000000.0f;
         }
     }
 
