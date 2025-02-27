@@ -140,7 +140,7 @@ int main()
 
 #pragma endregion
 
-    glfwSwapInterval(0);    //disable vsync
+    glfwSwapInterval(0);    //disable vsync to allow for unlimited framerate
 
     unsigned int fpsCounter = 0;
 
@@ -194,14 +194,14 @@ int main()
                         {
                             glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
 
-                            if (viewPos.z < farPlane)
+                            if (viewPos.z > farPlane)
                             {
                                 continue;   //skip the rendering process of the model. This prevents it from being drawn outright
                             }
                         }
 
                         glm::mat4 iteratedModel = glm::mat4(1.0f);
-                        iteratedModel = glm::translate(iteratedModel, iteratedModelPos);
+                        iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
                         iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
                         iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -214,6 +214,8 @@ int main()
 
 
         //ourBoundingBox.UpdateSelfAndChild();
+
+        std::cout << farPlane << std::endl;
 
         glfwSwapBuffers(window);
         glfwPollEvents();
