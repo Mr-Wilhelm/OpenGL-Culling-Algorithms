@@ -477,6 +477,7 @@
     <ClInclude Include="Dependencies\Includes\GLM\vector_relational.hpp" />
     <ClInclude Include="Dependencies\Includes\KHR\khrplatform.h" />
     <ClInclude Include="Dependencies\Includes\stb\stb_image.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />

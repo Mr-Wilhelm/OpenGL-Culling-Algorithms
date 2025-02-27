@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "CamView.h"
+#include "Main.h"
 
 #include<list>
 #include<memory>
@@ -22,13 +23,6 @@ public:
     std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
     BoundingBoxObjectClass* parent;
 };
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
-
-void DrawModels(Shader& ourShader, Model& ourModel);
 
 // settings
 const unsigned int SCR_WIDTH = 1200;
@@ -60,6 +54,51 @@ int zAxisObjects = 25;
 
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+void RunZCulling(glm::vec4& viewPos, int& retFlag)
+{
+    retFlag = 1;
+    if (viewPos.z > farPlane)
+    {
+        { retFlag = 3; return; };   //skip the rendering process of the model. This prevents it from being drawn outright
+    }
+}
+
+void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
+{
+    glm::mat4 iteratedModel = glm::mat4(1.0f);
+    iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
+    iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
+    iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    ourShader.setMat4("model", iteratedModel);
+    ourModel.Draw(ourShader);
+}
+
+void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total)
+{
+    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+}
+
+void RunBackFaceCulling(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+        if (!isBackCulling)
+        {
+            glEnable(GL_CULL_FACE);
+            isBackCulling = true;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    {
+        if (isBackCulling)
+        {
+            glDisable(GL_CULL_FACE);
+            isBackCulling = false;
+        }
+    }
+}
 
 int main()
 {
@@ -177,8 +216,7 @@ int main()
         unsigned int total = 0, display = 0;
         if (isFrustumCulling)
         {
-            ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
-            //std::cout << "total processed in CPU: " << total << " / total sent to GPU: " << display << std::endl;
+            RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
         }
         else
         {
@@ -194,29 +232,16 @@ int main()
                         {
                             glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
 
-                            if (viewPos.z > farPlane)
-                            {
-                                continue;   //skip the rendering process of the model. This prevents it from being drawn outright
-                            }
+                            int retFlag;
+                            RunZCulling(viewPos, retFlag);
+                            if (retFlag == 3) continue;
                         }
 
-                        glm::mat4 iteratedModel = glm::mat4(1.0f);
-                        iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
-                        iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
-                        iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-
-                        ourShader.setMat4("model", iteratedModel);
-                        ourModel.Draw(ourShader);
+                        DrawModels(i, j, k, ourShader, ourModel);
                     }
                 }
             }
         }
-
-
-        //ourBoundingBox.UpdateSelfAndChild();
-
-        std::cout << farPlane << std::endl;
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -224,6 +249,7 @@ int main()
     glfwTerminate();
     return 0;
 }
+
 void processInput(GLFWwindow* window)
 {
     //key and mouse input checks
@@ -239,22 +265,7 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-    {
-        if (!isBackCulling)
-        {
-            glEnable(GL_CULL_FACE);
-            isBackCulling = true;
-        }
-    }
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-    {
-        if (isBackCulling)
-        {
-            glDisable(GL_CULL_FACE);
-            isBackCulling = false;
-        }
-    }
+    RunBackFaceCulling(window);
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
     {
         if (!isFrustumCulling)

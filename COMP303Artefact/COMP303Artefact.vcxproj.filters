@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Class Header Files">
       <UniqueIdentifier>{fd887665-a6c9-4547-92c4-c94b984812a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ValidationTests">
+      <UniqueIdentifier>{3b1d56a1-f875-4ef3-b6bc-d7adfda855be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -1059,6 +1062,9 @@
       <Filter>Header Files\Class Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CamView.h">
+      <Filter>Header Files\Class Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
       <Filter>Header Files\Class Header Files</Filter>
     </ClInclude>
   </ItemGroup>
