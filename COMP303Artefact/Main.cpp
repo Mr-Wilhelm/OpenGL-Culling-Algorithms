@@ -10,7 +10,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "CamView.h"
-#include "Main.h"
+#include "CullingAlgorithms.h"
 
 #include<list>
 #include<memory>
@@ -23,6 +23,15 @@ public:
     std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
     BoundingBoxObjectClass* parent;
 };
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+void processInput(GLFWwindow* window);
+
+void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
+void DrawModels(Shader& ourShader, Model& ourModel);
 
 // settings
 const unsigned int SCR_WIDTH = 1200;

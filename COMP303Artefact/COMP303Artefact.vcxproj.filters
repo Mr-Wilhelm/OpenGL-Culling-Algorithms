@@ -1064,7 +1064,7 @@
     <ClInclude Include="CamView.h">
       <Filter>Header Files\Class Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Main.h">
+    <ClInclude Include="CullingAlgorithms.h">
       <Filter>Header Files\Class Header Files</Filter>
     </ClInclude>
   </ItemGroup>

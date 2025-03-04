@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CamView.h" />
+    <ClInclude Include="CullingAlgorithms.h" />
     <ClInclude Include="Dependencies\Includes\assimp\ai_assert.h" />
     <ClInclude Include="Dependencies\Includes\assimp\anim.h" />
     <ClInclude Include="Dependencies\Includes\assimp\camera.h" />
@@ -477,7 +478,6 @@
     <ClInclude Include="Dependencies\Includes\GLM\vector_relational.hpp" />
     <ClInclude Include="Dependencies\Includes\KHR\khrplatform.h" />
     <ClInclude Include="Dependencies\Includes\stb\stb_image.h" />
-    <ClInclude Include="Main.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />
