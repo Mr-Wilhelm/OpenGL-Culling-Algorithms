@@ -9,4 +9,4 @@ void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& ca
 
 void RunZCulling(glm::vec4& viewPos, int& retFlag);
 
-void RunBackFaceCulling(GLFWwindow * window);
+void RunBackFaceCulling(GLFWwindow *window);
