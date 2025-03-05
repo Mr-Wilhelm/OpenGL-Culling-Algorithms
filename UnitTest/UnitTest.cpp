@@ -9,12 +9,11 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
-
-//#include "Shader.h"
-//#include "Camera.h"
-//#include "Model.h"
-//#include "CamView.h"
-//#include "CullingAlgorithms.h"
+#include "Shader.h"
+#include "Camera.h"
+#include "Model.h"
+#include "CamView.h"
+#include "CullingAlgorithms.h"
 
 #include<list>
 #include<memory>
