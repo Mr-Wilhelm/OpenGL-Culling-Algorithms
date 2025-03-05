@@ -28,18 +28,18 @@ namespace UnitTest
 	{
 	public:
 		
-		//TEST_METHOD(UnitTest_ZCulling)
-		//{
-		//	glm::vec4 camPos(0.0f, 0.0f, 1000.0f, 1.0f);
-		//	int retFlag;
-
-		//	RunZCulling(camPos, retFlag);
-		//}
-		TEST_METHOD(UnitTest_BackfaceCulling)
+		TEST_METHOD(UnitTest_ZCulling)
 		{
-			GLFWwindow* window = glfwCreateWindow(1200, 800, "LearnOpenGL", nullptr, nullptr);
-			std::cout << "beans" << std::endl;
-			//RunBackFaceCulling(window);
+			glm::vec4 camPos(0.0f, 0.0f, 1000.0f, 1.0f);
+			int retFlag = 0;
+
+			RunZCulling(camPos, retFlag);
 		}
+		//TEST_METHOD(UnitTest_BackfaceCulling)
+		//{
+		//	GLFWwindow* window = glfwCreateWindow(1200, 800, "LearnOpenGL", nullptr, nullptr);
+		//	std::cout << "beans" << std::endl;
+		//	//RunBackFaceCulling(window);
+		//}
 	};
 }

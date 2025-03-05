@@ -43,7 +43,7 @@ Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
-float farPlane = 1000.0f;
+
 
 // timing
 float deltaTime = 0.0f;
@@ -64,14 +64,7 @@ int zAxisObjects = 25;
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-void RunZCulling(glm::vec4& viewPos, int& retFlag)
-{
-    retFlag = 1;
-    if (viewPos.z > farPlane)
-    {
-        { retFlag = 3; return; };   //skip the rendering process of the model. This prevents it from being drawn outright
-    }
-}
+
 
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
 {

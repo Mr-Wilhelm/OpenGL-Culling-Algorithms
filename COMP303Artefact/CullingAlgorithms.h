@@ -5,8 +5,17 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+float farPlane = 1000.0f;
+
 void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total);
 
-void RunZCulling(glm::vec4& viewPos, int& retFlag);
+void RunZCulling(glm::vec4& viewPos, int& retFlag)
+{
+    retFlag = 1;
+    if (viewPos.z > farPlane)
+    {
+        { retFlag = 3; return; };   //skip the rendering process of the model. This prevents it from being drawn outright
+    }
+}
 
 void RunBackFaceCulling(GLFWwindow *window);
