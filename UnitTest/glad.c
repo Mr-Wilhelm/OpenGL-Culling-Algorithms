@@ -641,6 +641,8 @@
 #include <string.h>
 #include <glad/glad.h>
 
+
+
 static void* get_proc(const char *namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
@@ -9429,4 +9431,3 @@ int gladLoadGLLoader(GLADloadproc load) {
 	load_GL_SUN_vertex(load);
 	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
-

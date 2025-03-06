@@ -38,5 +38,9 @@ namespace UnitTest
 		{
 			RunBackFaceCulling(testWindow);
 		}
+		TEST_METHOD(UnitTest_FrustumCulling)
+		{
+
+		}
 	};
 }
