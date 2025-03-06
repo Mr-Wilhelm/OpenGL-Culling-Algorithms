@@ -51,11 +51,13 @@ inline void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frus
     BoundingBoxObjectClass* testBoundingBoxPointer = &testBoundingBox;
     Shader* testShaderPointer = &testShader;
     Frustum testFrustum = camView;
-    BoundingBoxObjectClass& boundingBox = ourBoundingBox;
-    Shader& shader = ourShader;
+
+    testBoundingBoxPointer = &ourBoundingBox;
+    testShaderPointer = &ourShader;
+
     testDisplay = display;
     testTotal = total;
 
-    boundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
 }
 
