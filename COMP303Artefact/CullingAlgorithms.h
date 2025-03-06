@@ -40,6 +40,22 @@ inline void RunBackFaceCulling(GLFWwindow* window)
 }
 inline void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total)
 {
-    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+    Model testModel("Sphere.fbx");
+
+    BoundingBoxObjectClass testBoundingBox(testModel);
+
+    Shader testShader("shader.vs", "shader.fs");
+    unsigned int testDisplay;
+    unsigned int testTotal;
+
+    BoundingBoxObjectClass* testBoundingBoxPointer = &testBoundingBox;
+    Shader* testShaderPointer = &testShader;
+    Frustum testFrustum = camView;
+    BoundingBoxObjectClass& boundingBox = ourBoundingBox;
+    Shader& shader = ourShader;
+    testDisplay = display;
+    testTotal = total;
+
+    boundingBox.DrawSelfAndChild(camView, ourShader, display, total);
 }
 

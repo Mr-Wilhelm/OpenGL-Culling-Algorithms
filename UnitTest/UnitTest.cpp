@@ -40,7 +40,7 @@ namespace UnitTest
 		}
 		TEST_METHOD(UnitTest_FrustumCulling)
 		{
-
+			/*RunFrustumCulling(testBoundingBox, )*/
 		}
 	};
 }
