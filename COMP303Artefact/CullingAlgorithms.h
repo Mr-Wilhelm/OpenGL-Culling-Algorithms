@@ -7,6 +7,7 @@
 
 float farPlane = 1000.0f;
 bool isBackCulling;
+GLFWwindow* testWindow;
 
 void RunZCulling(glm::vec4& viewPos, int& retFlag)
 {
@@ -18,6 +19,8 @@ void RunZCulling(glm::vec4& viewPos, int& retFlag)
 }
 inline void RunBackFaceCulling(GLFWwindow* window)
 {
+    testWindow = glfwCreateWindow(1200, 800, "testWindow", nullptr, nullptr);
+    window = testWindow;
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
     {
         if (!isBackCulling)
