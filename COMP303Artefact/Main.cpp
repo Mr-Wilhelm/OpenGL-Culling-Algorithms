@@ -31,6 +31,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
+
+
+
 void DrawModels(Shader& ourShader, Model& ourModel);
 
 // settings
@@ -52,7 +55,6 @@ float lastFrame = 0.0f;
 bool wireFrame = false;
 
 //culling bools
-bool isBackCulling = false;
 bool isFrustumCulling = false;
 bool isZCulling = false;
 
@@ -75,31 +77,6 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
 
     ourShader.setMat4("model", iteratedModel);
     ourModel.Draw(ourShader);
-}
-
-void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total)
-{
-    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
-}
-
-void RunBackFaceCulling(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-    {
-        if (!isBackCulling)
-        {
-            glEnable(GL_CULL_FACE);
-            isBackCulling = true;
-        }
-    }
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-    {
-        if (isBackCulling)
-        {
-            glDisable(GL_CULL_FACE);
-            isBackCulling = false;
-        }
-    }
 }
 
 int main()

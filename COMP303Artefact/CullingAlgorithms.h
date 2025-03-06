@@ -6,8 +6,7 @@
 #include <glad/glad.h>
 
 float farPlane = 1000.0f;
-
-void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total);
+bool isBackCulling;
 
 void RunZCulling(glm::vec4& viewPos, int& retFlag)
 {
@@ -17,5 +16,27 @@ void RunZCulling(glm::vec4& viewPos, int& retFlag)
         { retFlag = 3; return; };   //skip the rendering process of the model. This prevents it from being drawn outright
     }
 }
+inline void RunBackFaceCulling(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+        if (!isBackCulling)
+        {
+            glEnable(GL_CULL_FACE);
+            isBackCulling = true;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    {
+        if (isBackCulling)
+        {
+            glDisable(GL_CULL_FACE);
+            isBackCulling = false;
+        }
+    }
+}
+inline void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total)
+{
+    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+}
 
-void RunBackFaceCulling(GLFWwindow *window);
