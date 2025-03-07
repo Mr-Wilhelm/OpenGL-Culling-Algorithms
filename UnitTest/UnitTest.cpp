@@ -9,6 +9,10 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
@@ -24,6 +28,13 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest
 {
+	class BoundingBoxObject : public Model //declare a bounding box inheriting from model
+	{
+	public:
+		std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
+		BoundingBoxObjectClass* parent;
+	};
+
 	TEST_CLASS(UnitTest)
 	{
 	public:	
@@ -40,7 +51,11 @@ namespace UnitTest
 		}
 		TEST_METHOD(UnitTest_FrustumCulling)
 		{
-			/*RunFrustumCulling(testBoundingBox, )*/
+			std::cout << "Running Unit Test" << std::endl;
+
+			Model testModel("Sphere.fbx");
+
+			std::cout << "Finished Unit Test" << std::endl;
 		}
 	};
 }
