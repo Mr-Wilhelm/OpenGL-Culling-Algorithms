@@ -54,6 +54,17 @@ namespace UnitTest
 			std::cout << "Running Unit Test" << std::endl;
 
 			Model testModel("Sphere.fbx");
+			BoundingBoxObjectClass testBoundingBox(testModel);
+
+			Camera testCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+			Frustum testFrustum = CreateCameraBounds(testCamera, 1.0f, glm::radians(45.0f), 0.1f, 1000000.0f);
+
+			Shader testShader("shader.vs", "shader.fs");
+
+			unsigned int testDisplay = 0;
+			unsigned int testTotal = 0;
+
+			RunFrustumCulling(testBoundingBox, testFrustum, testShader, testDisplay, testTotal);
 
 			std::cout << "Finished Unit Test" << std::endl;
 		}
