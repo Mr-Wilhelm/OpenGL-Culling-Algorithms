@@ -40,33 +40,68 @@ namespace UnitTest
 	public:	
 		TEST_METHOD(UnitTest_ZCulling)
 		{
-			glm::vec4 camPos(0.0f, 0.0f, 1000.0f, 1.0f);
-			int retFlag = 0;
+			try
+			{
+				glm::vec4 camPos(0.0f, 0.0f, 1000.0f, 1.0f);
+				int retFlag = 0;
 
-			RunZCulling(camPos, retFlag);
+				RunZCulling(camPos, retFlag);
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail();
+			}
+
 		}
 		TEST_METHOD(UnitTest_BackCulling)
 		{
-			RunBackFaceCulling(testWindow);
+			try
+			{
+				RunBackFaceCulling(testWindow);
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail();
+			}
 		}
 		TEST_METHOD(UnitTest_FrustumCulling)
 		{
-			std::cout << "Running Unit Test" << std::endl;
+			try
+			{
+				std::cout << "Running Unit Test" << std::endl;
 
-			Model testModel("Sphere.fbx");
-			BoundingBoxObjectClass testBoundingBox(testModel);
+				Model testModel("Sphere.fbx");
+				BoundingBoxObjectClass testBoundingBox(testModel);
 
-			Camera testCamera(glm::vec3(0.0f, 0.0f, 3.0f));
-			Frustum testFrustum = CreateCameraBounds(testCamera, 1.0f, glm::radians(45.0f), 0.1f, 1000000.0f);
+				Camera testCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+				Frustum testFrustum = CreateCameraBounds(testCamera, 1.0f, glm::radians(45.0f), 0.1f, 1000000.0f);
 
-			Shader testShader("shader.vs", "shader.fs");
+				Shader testShader("shader.vs", "shader.fs");
 
-			unsigned int testDisplay = 0;
-			unsigned int testTotal = 0;
+				unsigned int testDisplay = 0;
+				unsigned int testTotal = 0;
 
-			RunFrustumCulling(testBoundingBox, testFrustum, testShader, testDisplay, testTotal);
+				RunFrustumCulling(testBoundingBox, testFrustum, testShader, testDisplay, testTotal);
 
-			std::cout << "Finished Unit Test" << std::endl;
+				std::cout << "Finished Unit Test" << std::endl;
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail();
+			}
+		}
+		TEST_METHOD(beep)
+		{
+			try
+			{
+				int total = TestFunction(10, 10);
+				Assert::AreEqual(20, total);
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail();
+			}
+
 		}
 	};
 }

@@ -43,3 +43,8 @@ inline void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frus
     ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
 }
 
+int TestFunction(int a, int b)
+{
+    return a + b;
+}
+
