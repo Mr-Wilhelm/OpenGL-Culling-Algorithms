@@ -1474,13 +1474,14 @@
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Dependencies\Lib\assimp-vc140-mt.lib" />
-    <Library Include="Dependencies\Lib\glfw3.lib" />
+    <None Include="assimp-vc140-mt.dll" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
     <Text Include="Dependencies\Includes\GLM\copying.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependencies\Lib\assimp-vc140-mt.lib" />
+    <Library Include="Dependencies\Lib\glfw3.lib" />
   </ItemGroup>
 </Project>
