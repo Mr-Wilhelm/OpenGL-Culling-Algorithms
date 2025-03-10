@@ -12,10 +12,10 @@
 #include "CamView.h"
 #include "CullingAlgorithms.h"
 
+#include <iostream>
 #include<list>
 #include<memory>
 
-#include <iostream>
 
 class BoundingBoxObject : public Model //declare a bounding box inheriting from model
 {
@@ -31,8 +31,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
-
-
 
 void DrawModels(Shader& ourShader, Model& ourModel);
 
@@ -65,8 +63,6 @@ int zAxisObjects = 25;
 
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-
-
 
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
 {
@@ -176,6 +172,7 @@ int main()
             lastFrame = currentFrame;
             fpsCounter = 0;
         }
+        std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
 
         processInput(window);
 
