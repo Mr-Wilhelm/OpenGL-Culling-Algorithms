@@ -73,11 +73,11 @@ enum EnvironmentEnum
     DEFAULT //default value for testing
 };
 
-void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
+void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
 {
     glm::mat4 iteratedModel = glm::mat4(1.0f);
     iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
-    iteratedModel = glm::scale(iteratedModel, glm::vec3(5.0f, 5.0f, 5.0f));	// scale
+    iteratedModel = glm::scale(iteratedModel, modelScale);	// scale
     iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     ourShader.setMat4("model", iteratedModel);
@@ -136,8 +136,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
-    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DENSE;
+    chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -151,7 +151,7 @@ int main()
     Model ourModel("Sphere.fbx");
     BoundingBoxObjectClass ourBoundingBox(ourModel);
     ourBoundingBox.transform.SetPos({ 0, 0, 0 });
-    const float scale = 5.0;
+    const float scale = 10.0;
     ourBoundingBox.transform.SetSca({ scale, scale, scale });
 
     switch (chosenEnvironment)
@@ -169,7 +169,7 @@ int main()
                         ourBoundingBox.AddChild(ourModel);
                         lastBoundingBox = ourBoundingBox.children.back().get();
 
-                        lastBoundingBox->transform.SetPos({ i * 5.0f, j * 5.0f, k * 5.0f });
+                        lastBoundingBox->transform.SetPos({ i * 2.5f, j * 2.5f, k * 2.5f });    //this line of code changes the position when frustum culling is active - i can't remember why, but it just does
                     }
                 }
             }
@@ -179,6 +179,23 @@ int main()
         case(SPARSE): //sparsely packed scene
         {
             std::cout << "baseline model drawing for sparse scene" << std::endl;
+
+            BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
+
+            for (int i = 0; i < xAxisObjects; i++)
+            {
+                for (int j = 0; j < yAxisObjects; j++)
+                {
+                    for (int k = 0; k < zAxisObjects; k++)
+                    {
+                        ourBoundingBox.AddChild(ourModel);
+                        lastBoundingBox = ourBoundingBox.children.back().get();
+
+                        lastBoundingBox->transform.SetPos({ i * 10.0f, j * 10.0f, k * 10.0f });
+                    }
+                }
+            }
+
             break;
         }
         case(DYNAMIC): //dynamic scene (its got moving parts in it :O)
@@ -234,10 +251,7 @@ int main()
         ourShader.setMat4("view", view);
 
         unsigned int total = 0, display = 0;
-
-
-
-        
+     
         switch (chosenEnvironment) //set the value for the chosenEnvironment enum at the top
         {
             case(DENSE):    //densely packed scene
@@ -254,7 +268,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
+                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
 
                                 if (isZCulling)
                                 {
@@ -265,7 +279,7 @@ int main()
                                     if (retFlag == 3) continue;
                                 }
 
-                                DrawModels(i, j, k, ourShader, ourModel);
+                                DrawModels(i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
                             }
                         }
                     }
@@ -274,7 +288,34 @@ int main()
             }
             case(SPARSE):   //sparsely packed scene
             {
-                std::cout << "render the sparse scene" << std::endl;
+                if (isFrustumCulling)
+                {
+                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
+                }
+                else
+                {
+                    for (int i = 0; i < xAxisObjects; i++)
+                    {
+                        for (int j = 0; j < yAxisObjects; j++)
+                        {
+                            for (int k = 0; k < zAxisObjects; k++)
+                            {
+                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
+
+                                if (isZCulling)
+                                {
+                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+
+                                    int retFlag;
+                                    RunZCulling(viewPos, retFlag);
+                                    if (retFlag == 3) continue;
+                                }
+
+                                DrawModels(i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                            }
+                        }
+                    }
+                }
                 break;
             }
             case(DYNAMIC):  //dynamic scene (its got moving parts in it :O)
