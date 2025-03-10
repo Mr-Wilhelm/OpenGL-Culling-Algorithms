@@ -70,7 +70,10 @@ namespace UnitTest
 			{
 				std::cout << "Running Unit Test" << std::endl;
 
-				Model testModel("Sphere.fbx");
+				Model testModel;	//the error is somewhere here - Credit: Joseph Walton-Rivers
+				if (!testModel.isloaded())
+					Assert::Fail();
+
 				BoundingBoxObjectClass testBoundingBox(testModel);
 
 				Camera testCamera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -85,8 +88,9 @@ namespace UnitTest
 
 				std::cout << "Finished Unit Test" << std::endl;
 			}
-			catch (const std::exception&)
+			catch (const std::exception& ex)
 			{
+				std::cerr << ex.what() << std::endl;
 				Assert::Fail();
 			}
 		}

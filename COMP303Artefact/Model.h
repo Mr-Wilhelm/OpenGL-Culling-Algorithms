@@ -38,12 +38,18 @@ public:
 	{
 		SpawnModel(path);
 	}
+	Model() = default;
+
 	void Draw(Shader& shader)
 	{
 		for (unsigned int i = 0; i < meshes.size(); i++)	//iterate through all meshes
 		{
 			meshes[i].Draw(shader);	//Call the draw function of each mesh
 		}
+	}
+
+	bool isloaded() const {
+		return !meshes.empty();
 	}
 
 private:

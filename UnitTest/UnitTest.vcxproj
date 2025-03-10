@@ -657,6 +657,7 @@
     <None Include="Dependencies\Includes\GLM\gtx\vector_angle.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\vector_query.inl" />
     <None Include="Dependencies\Includes\GLM\gtx\wrap.inl" />
+    <None Include="Sphere.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />

@@ -1475,6 +1475,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="assimp-vc140-mt.dll" />
+    <None Include="Sphere.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\Includes\GLM\CMakeLists.txt" />
