@@ -34,11 +34,11 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
 void DrawModels(Shader& ourShader, Model& ourModel);
 
-// settings
+//settings
 const unsigned int SCR_WIDTH = 1200;
 const unsigned int SCR_HEIGHT = 800;
 
-// camera
+//camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -46,7 +46,7 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 
-// timing
+//timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
@@ -63,6 +63,15 @@ int zAxisObjects = 25;
 
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+//-----SET ENVIRONMENT BOOLS HERE-----
+enum EnvironmentEnum
+{
+    DENSE,  //a densely packed environment
+    SPARSE, //a sparsely packed environment
+    DYNAMIC, //a dynamimc environment
+    DEFAULT //default value for testing
+};
 
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel)
 {
@@ -122,6 +131,18 @@ int main()
     glCullFace(GL_BACK);    //tell opengl to cull the back faces
     glFrontFace(GL_FRONT);  //tell opengl which faces are the front faces
 
+    enum EnvironmentEnum chosenEnvironment;
+
+    //----------SELECT ENVIRONMENT HERE----------
+    //------CHOICES: DENSE, SPARSE, DYNAMIC------
+
+    chosenEnvironment = DENSE;
+    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = DEFAULT;
+
+    //-------------------------------------------
+
 #pragma region Model fbx
 
     //Make sure there is the exact number of models that need to be rendered
@@ -133,30 +154,53 @@ int main()
     const float scale = 5.0;
     ourBoundingBox.transform.SetSca({ scale, scale, scale });
 
+    switch (chosenEnvironment)
     {
-        BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
-
-        for (int i = 0; i < xAxisObjects; i++)
+        case(DENSE): //densely packed scene
         {
-            for (int j = 0; j < yAxisObjects; j++)
-            {
-                for (int k = 0; k < zAxisObjects; k++)
-                {
-                    ourBoundingBox.AddChild(ourModel);
-                    lastBoundingBox = ourBoundingBox.children.back().get();
+            BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
 
-                    lastBoundingBox->transform.SetPos({ i * 5.0f, j * 5.0f, k * 5.0f });
+            for (int i = 0; i < xAxisObjects; i++)
+            {
+                for (int j = 0; j < yAxisObjects; j++)
+                {
+                    for (int k = 0; k < zAxisObjects; k++)
+                    {
+                        ourBoundingBox.AddChild(ourModel);
+                        lastBoundingBox = ourBoundingBox.children.back().get();
+
+                        lastBoundingBox->transform.SetPos({ i * 5.0f, j * 5.0f, k * 5.0f });
+                    }
                 }
             }
+            ourBoundingBox.UpdateSelfAndChild();
+            break;
         }
+        case(SPARSE): //sparsely packed scene
+        {
+            std::cout << "baseline model drawing for sparse scene" << std::endl;
+            break;
+        }
+        case(DYNAMIC): //dynamic scene (its got moving parts in it :O)
+        {
+            std::cout << "baseline model drawing for dyanmic scene" << std::endl;
+            break;
+        }
+        default: //robustness check to prevent random enum values
+        {
+            throw std::invalid_argument("Invalid chosen environment enum chosen, please choose a valid enum"); //throw an exception to prevent incorrect environments
+            break;
+        }
+
     }
-    ourBoundingBox.UpdateSelfAndChild();
+
 
 #pragma endregion
 
     glfwSwapInterval(0);    //disable vsync to allow for unlimited framerate
 
     unsigned int fpsCounter = 0;
+
 
     //Main Loop
     while (!glfwWindowShouldClose(window))
@@ -172,7 +216,7 @@ int main()
             lastFrame = currentFrame;
             fpsCounter = 0;
         }
-        std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
+        //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
 
         processInput(window);
 
@@ -190,33 +234,57 @@ int main()
         ourShader.setMat4("view", view);
 
         unsigned int total = 0, display = 0;
-        if (isFrustumCulling)
+
+
+
+        
+        switch (chosenEnvironment) //set the value for the chosenEnvironment enum at the top
         {
-            RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
-        }
-        else
-        {
-            for (int i = 0; i < xAxisObjects; i++)
+            case(DENSE):    //densely packed scene
             {
-                for (int j = 0; j < yAxisObjects; j++)
+                if (isFrustumCulling)
                 {
-                    for (int k = 0; k < zAxisObjects; k++)
+                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
+                }
+                else
+                {
+                    for (int i = 0; i < xAxisObjects; i++)
                     {
-                        glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
-
-                        if (isZCulling)
+                        for (int j = 0; j < yAxisObjects; j++)
                         {
-                            glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+                            for (int k = 0; k < zAxisObjects; k++)
+                            {
+                                glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
 
-                            int retFlag;
-                            RunZCulling(viewPos, retFlag);
-                            if (retFlag == 3) continue;
+                                if (isZCulling)
+                                {
+                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+
+                                    int retFlag;
+                                    RunZCulling(viewPos, retFlag);
+                                    if (retFlag == 3) continue;
+                                }
+
+                                DrawModels(i, j, k, ourShader, ourModel);
+                            }
                         }
-
-                        DrawModels(i, j, k, ourShader, ourModel);
                     }
                 }
+                break;
             }
+            case(SPARSE):   //sparsely packed scene
+            {
+                std::cout << "render the sparse scene" << std::endl;
+                break;
+            }
+            case(DYNAMIC):  //dynamic scene (its got moving parts in it :O)
+            {
+                std::cout << "render the dyanmic environment" << std::endl;
+                break;
+            }
+            default:    //robustness check to prevent random enum values
+                throw std::invalid_argument("Invalid chosen environment enum chosen, please choose a valid enum"); //throw an exception to prevent incorrect environments
+                break;
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
