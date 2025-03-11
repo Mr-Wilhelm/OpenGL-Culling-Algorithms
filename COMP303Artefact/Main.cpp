@@ -34,6 +34,8 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
 void DrawModels(Shader& ourShader, Model& ourModel);
 
+bool WriteFramerate(std::string fileName, std::string iteration, std::string currentFrame, std::string framerateValue);
+
 //settings
 const unsigned int screenWidth = 1200;
 const unsigned int screenHeight = 800;
@@ -49,6 +51,7 @@ bool firstMouse = true;
 //timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+float lastTimeWritten = 0.0f;
 
 bool wireFrame = false;
 
@@ -82,6 +85,18 @@ void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Mode
 
     ourShader.setMat4("model", iteratedModel);
     ourModel.Draw(ourShader);
+}
+
+bool WriteFramerate(std::string fileName, std::string iteration, std::string currentFrame, std::string framerateValue)
+{
+    std::ofstream fileObject; //creates a variable that writes the data to the file
+    fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
+
+    //output the iteration, then the current frame, and then the framerate value
+    fileObject << "iteration " + iteration << " ," << currentFrame << " ," << framerateValue << std::endl;   //writes the data to the file, going to the next line
+    fileObject.close();
+
+    return true;
 }
 
 int main()
@@ -211,7 +226,7 @@ int main()
                         ourBoundingBox.AddChild(ourModel);
                         lastBoundingBox = ourBoundingBox.children.back().get();
 
-                        lastBoundingBox->transform.SetPos({ i * 6.25f, j * 6.25f, k * 6.25f });
+                        lastBoundingBox->transform.SetPos({ i * 4.0f, j * 4.0f, k * 4.0f });
                     }
                 }
             }
@@ -241,14 +256,22 @@ int main()
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
 
+        std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
+
+
         if (deltaTime >= 1.0f / 30.0f)
         {
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter);
             glfwSetWindowTitle(window, framerate.c_str());
+            if (currentFrame - lastTimeWritten >= 1)
+            {
+                bool framerateWrite = WriteFramerate("FramerateValues.csv", "1", std::to_string(currentFrame), framerate);   //increment the counter after each run
+            }
             lastFrame = currentFrame;
             fpsCounter = 0;
         }
-        //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
+
+
 
         processInput(window);
 
@@ -344,18 +367,18 @@ int main()
                     {
                         for (int k = 0; k < zAxisObjects; k++)
                         {
-                            glm::vec3 iteratedModelPos = glm::vec3(62.5f * i, 62.5f * j, 62.5f * k);
+                            glm::vec3 iteratedModelPos = glm::vec3(40.0f * i, 40.0f * j, 40.0f * k);
 
                             //offset the starting position for each model so they rotate starting in a different position
-                            float xOffset = 62.5 * glm::sin(currentFrame + i);
-                            float yOffset = 62.5 * glm::cos(currentFrame + j);
-                            float zOffset = 62.5 * glm::sin(currentFrame + k);
+                            float xOffset = 40.0f * glm::sin(currentFrame + i);
+                            float yOffset = 40.0f * glm::cos(currentFrame + j);
+                            float zOffset = 40.0f * glm::sin(currentFrame + k);
 
-                            glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);
+                            glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);  //make the offset a vector
 
-                            glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;
+                            glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
 
-                            DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                            DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
                         }
                     }
                 }
