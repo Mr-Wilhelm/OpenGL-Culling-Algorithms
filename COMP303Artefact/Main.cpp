@@ -35,14 +35,14 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 void DrawModels(Shader& ourShader, Model& ourModel);
 
 //settings
-const unsigned int SCR_WIDTH = 1200;
-const unsigned int SCR_HEIGHT = 800;
+const unsigned int screenWidth = 1200;
+const unsigned int screenHeight = 800;
 
 //camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+float lastX = screenWidth / 2.0f;
+float lastY = screenHeight / 2.0f;
 bool firstMouse = true;
 
 
@@ -76,7 +76,7 @@ enum EnvironmentEnum
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
 {
     glm::mat4 iteratedModel = glm::mat4(1.0f);
-    iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));
+    iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));  //this changes the default position of the model
     iteratedModel = glm::scale(iteratedModel, modelScale);	// scale
     iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -98,7 +98,7 @@ int main()
 #endif
 
     //Creating Window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "DissertationArtefact", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -195,7 +195,7 @@ int main()
                     }
                 }
             }
-
+            ourBoundingBox.UpdateSelfAndChild();
             break;
         }
         case(DYNAMIC): //dynamic scene (its got moving parts in it :O)
@@ -244,8 +244,8 @@ int main()
         ourShader.use();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, farPlane);
-        const Frustum camView = CreateCameraBounds(camera, (float)SCR_WIDTH / (float)SCR_HEIGHT, glm::radians(camera.Zoom), 0.1f, farPlane);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / (float)screenHeight, 0.1f, farPlane);
+        const Frustum camView = CreateCameraBounds(camera, (float)screenWidth / (float)screenHeight, glm::radians(camera.Zoom), 0.1f, farPlane);
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
@@ -300,7 +300,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
+                                glm::vec3 iteratedModelPos = glm::vec3(00.0f * i, 0.0f * j, 0.0f * k);
 
                                 if (isZCulling)
                                 {
