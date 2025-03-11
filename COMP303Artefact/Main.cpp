@@ -136,14 +136,14 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
+    //chosenEnvironment = DENSE;
     //chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
 
-#pragma region Model fbx
+#pragma region Model Initialisation
 
     //Make sure there is the exact number of models that need to be rendered
     //otherwise the model faces are processed, but not draw, which will add to the face count
@@ -200,7 +200,22 @@ int main()
         }
         case(DYNAMIC): //dynamic scene (its got moving parts in it :O)
         {
-            std::cout << "baseline model drawing for dyanmic scene" << std::endl;
+            BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
+
+            for (int i = 0; i < xAxisObjects; i++)
+            {
+                for (int j = 0; j < yAxisObjects; j++)
+                {
+                    for (int k = 0; k < zAxisObjects; k++)
+                    {
+                        ourBoundingBox.AddChild(ourModel);
+                        lastBoundingBox = ourBoundingBox.children.back().get();
+
+                        lastBoundingBox->transform.SetPos({ i * 6.25f, j * 6.25f, k * 6.25f });
+                    }
+                }
+            }
+            ourBoundingBox.UpdateSelfAndChild();
             break;
         }
         default: //robustness check to prevent random enum values
@@ -320,7 +335,31 @@ int main()
             }
             case(DYNAMIC):  //dynamic scene (its got moving parts in it :O)
             {
-                std::cout << "render the dyanmic environment" << std::endl;
+                //matrix maths for rotations learned here, then refactored - https://learnopengl.com/Getting-started/Transformations
+                //and here as well - https://catlikecoding.com/unity/tutorials/rendering/part-1/
+
+                for (int i = 0; i < xAxisObjects; i++)
+                {
+                    for (int j = 0; j < yAxisObjects; j++)
+                    {
+                        for (int k = 0; k < zAxisObjects; k++)
+                        {
+                            glm::vec3 iteratedModelPos = glm::vec3(62.5f * i, 62.5f * j, 62.5f * k);
+
+                            //offset the starting position for each model so they rotate starting in a different position
+                            float xOffset = 62.5 * glm::sin(currentFrame + i);
+                            float yOffset = 62.5 * glm::cos(currentFrame + j);
+                            float zOffset = 62.5 * glm::sin(currentFrame + k);
+
+                            glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);
+
+                            glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;
+
+                            DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                        }
+                    }
+                }
+
                 break;
             }
             default:    //robustness check to prevent random enum values
