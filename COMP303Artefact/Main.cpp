@@ -76,7 +76,7 @@ enum EnvironmentEnum
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
 {
     glm::mat4 iteratedModel = glm::mat4(1.0f);
-    iteratedModel = glm::translate(iteratedModel, glm::vec3(25.0f * i, 25.0f * j, 25.0f * k));  //this changes the default position of the model
+    iteratedModel = glm::translate(iteratedModel, glm::vec3(100.0f * i, 100.0f * j, 100.0f * k));
     iteratedModel = glm::scale(iteratedModel, modelScale);	// scale
     iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -300,7 +300,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                glm::vec3 iteratedModelPos = glm::vec3(00.0f * i, 0.0f * j, 0.0f * k);
+                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
 
                                 if (isZCulling)
                                 {
