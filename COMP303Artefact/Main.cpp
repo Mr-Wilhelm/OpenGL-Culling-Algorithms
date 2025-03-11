@@ -73,10 +73,10 @@ enum EnvironmentEnum
     DEFAULT //default value for testing
 };
 
-void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
+void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
 {
     glm::mat4 iteratedModel = glm::mat4(1.0f);
-    iteratedModel = glm::translate(iteratedModel, glm::vec3(100.0f * i, 100.0f * j, 100.0f * k));
+    iteratedModel = glm::translate(iteratedModel, modelPos);
     iteratedModel = glm::scale(iteratedModel, modelScale);	// scale
     iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -136,8 +136,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
+    chosenEnvironment = DENSE;
+    //chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -268,7 +268,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
+                                glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);    //this should be 10x more than whatever the position is when frustum culling is active
 
                                 if (isZCulling)
                                 {
@@ -279,7 +279,7 @@ int main()
                                     if (retFlag == 3) continue;
                                 }
 
-                                DrawModels(i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
                             }
                         }
                     }
@@ -300,7 +300,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                glm::vec3 iteratedModelPos = glm::vec3(0.0f * i, 0.0f * j, 0.0f * k);
+                                glm::vec3 iteratedModelPos = glm::vec3(100.0f * i, 100.0f * j, 100.0f * k);
 
                                 if (isZCulling)
                                 {
@@ -311,7 +311,7 @@ int main()
                                     if (retFlag == 3) continue;
                                 }
 
-                                DrawModels(i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
                             }
                         }
                     }
