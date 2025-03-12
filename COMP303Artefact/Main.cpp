@@ -34,7 +34,7 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
 void DrawModels(Shader& ourShader, Model& ourModel);
 
-bool WriteFramerate(std::string fileName, std::string iteration, std::string currentFrame, std::string framerateValue);
+bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue);
 
 //settings
 const unsigned int screenWidth = 1200;
@@ -67,6 +67,10 @@ int zAxisObjects = 25;
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
+//data gathering variables
+std::string fileName = "FramerateValues.csv";
+int iteration = 1;
+
 //-----SET ENVIRONMENT BOOLS HERE-----
 enum EnvironmentEnum
 {
@@ -87,13 +91,13 @@ void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Mode
     ourModel.Draw(ourShader);
 }
 
-bool WriteFramerate(std::string fileName, std::string iteration, std::string currentFrame, std::string framerateValue)
+bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue)
 {
     std::ofstream fileObject; //creates a variable that writes the data to the file
     fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
 
     //output the iteration, then the current frame, and then the framerate value
-    fileObject << "iteration " + iteration << " ," << currentFrame << " ," << framerateValue << std::endl;   //writes the data to the file, going to the next line
+    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << std::endl;   //writes the data to the file, going to the next line
     fileObject.close();
 
     return true;
@@ -101,7 +105,7 @@ bool WriteFramerate(std::string fileName, std::string iteration, std::string cur
 
 int main()
 {
-    //initialise GLFW
+    //GLFW setup
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -112,7 +116,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    //Creating Window
+    //Create window
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "DissertationArtefact", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -125,10 +129,10 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    // tell GLFW to capture our mouse
+    //prevent the mouse frmo being seen
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    //Setting up GLAD
+    //GLAD setup
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
@@ -136,9 +140,8 @@ int main()
     }
     stbi_set_flip_vertically_on_load(true);
 
-    Shader ourShader("shader.vs", "shader.fs");
+    Shader ourShader("shader.vs", "shader.fs"); //declare shader files
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);     // draw in wireframe
     glEnable(GL_DEPTH_TEST);
 
     glDepthFunc(GL_LESS);
@@ -146,14 +149,14 @@ int main()
     glCullFace(GL_BACK);    //tell opengl to cull the back faces
     glFrontFace(GL_FRONT);  //tell opengl which faces are the front faces
 
-    enum EnvironmentEnum chosenEnvironment;
+    enum EnvironmentEnum chosenEnvironment; //declare environment enum
 
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    //chosenEnvironment = DENSE;
+    chosenEnvironment = DENSE;
     //chosenEnvironment = SPARSE;
-    chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
@@ -163,26 +166,27 @@ int main()
     //Make sure there is the exact number of models that need to be rendered
     //otherwise the model faces are processed, but not draw, which will add to the face count
 
-    Model ourModel("Sphere.fbx");
-    BoundingBoxObjectClass ourBoundingBox(ourModel);
-    ourBoundingBox.transform.SetPos({ 0, 0, 0 });
-    const float scale = 10.0;
-    ourBoundingBox.transform.SetSca({ scale, scale, scale });
+    Model ourModel("Sphere.fbx");   //initialise model variable
+    BoundingBoxObjectClass ourBoundingBox(ourModel);    //initialise bounding box variable
+    ourBoundingBox.transform.SetPos({ 0, 0, 0 });   //set positions of the bounding box relative to the model
+    const float scale = 10.0;   //set scale of bounding boxes
+    ourBoundingBox.transform.SetSca({ scale, scale, scale });   //set scale relative to the model
 
     switch (chosenEnvironment)
     {
         case(DENSE): //densely packed scene
         {
-            BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;
+            BoundingBoxObjectClass* lastBoundingBox = &ourBoundingBox;  //get bounding box
 
+            //iterate three dimensionally
             for (int i = 0; i < xAxisObjects; i++)
             {
                 for (int j = 0; j < yAxisObjects; j++)
                 {
                     for (int k = 0; k < zAxisObjects; k++)
                     {
-                        ourBoundingBox.AddChild(ourModel);
-                        lastBoundingBox = ourBoundingBox.children.back().get();
+                        ourBoundingBox.AddChild(ourModel);  //add bounding box as a child to the model
+                        lastBoundingBox = ourBoundingBox.children.back().get(); //get the previous bounding box
 
                         lastBoundingBox->transform.SetPos({ i * 2.5f, j * 2.5f, k * 2.5f });    //this line of code changes the position when frustum culling is active - i can't remember why, but it just does
                     }
@@ -261,11 +265,11 @@ int main()
 
         if (deltaTime >= 1.0f / 30.0f)
         {
-            std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter);
-            glfwSetWindowTitle(window, framerate.c_str());
+            std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
+            glfwSetWindowTitle(window, framerate.c_str());  //assign it to the title of the window (to avoid having to make UI)
             if (currentFrame - lastTimeWritten >= 1)
             {
-                bool framerateWrite = WriteFramerate("FramerateValues.csv", "1", std::to_string(currentFrame), framerate);   //increment the counter after each run
+                bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate);   //increment the counter after each run
             }
             lastFrame = currentFrame;
             fpsCounter = 0;
@@ -282,9 +286,9 @@ int main()
         ourShader.use();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / (float)screenHeight, 0.1f, farPlane);
-        const Frustum camView = CreateCameraBounds(camera, (float)screenWidth / (float)screenHeight, glm::radians(camera.Zoom), 0.1f, farPlane);
-        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / (float)screenHeight, 0.1f, farPlane);   //projection matrix
+        const Frustum camView = CreateCameraBounds(camera, (float)screenWidth / (float)screenHeight, glm::radians(camera.Zoom), 0.1f, farPlane);    //cam view frustum
+        glm::mat4 view = camera.GetViewMatrix();    //get view matrix
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
