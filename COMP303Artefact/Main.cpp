@@ -16,6 +16,7 @@
 #include<list>
 #include<memory>
 
+//TODO: Assign an AABB to each model and get the polycount constantly based off of that perhaps?
 
 class BoundingBoxObject : public Model //declare a bounding box inheriting from model
 {
@@ -154,9 +155,9 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
+    //chosenEnvironment = DENSE;
     //chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
