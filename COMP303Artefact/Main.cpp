@@ -71,7 +71,7 @@ glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 //data gathering variables
 std::string fileName = "FramerateValues.csv";
 int iteration = 1;
-int numPolygons = 12288;
+int numPolygons = 12288;    //hard coded due to time constraints
 
 //-----SET ENVIRONMENT BOOLS HERE-----
 enum EnvironmentEnum
@@ -93,13 +93,13 @@ void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Mode
     ourModel.Draw(ourShader);
 }
 
-bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue)
+bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue, std::string polyCount, std::string modelCount)
 {
     std::ofstream fileObject; //creates a variable that writes the data to the file
     fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
 
     //output the iteration, then the current frame, and then the framerate value
-    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << std::endl;   //writes the data to the file, going to the next line
+    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << ", " << polyCount << ", " << modelCount << std::endl;   //writes the data to the file, going to the next line
     fileObject.close();
 
     return true;
@@ -276,7 +276,7 @@ int main()
             glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
             if (currentFrame - lastTimeWritten >= 1)
             {
-                bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate);   //increment the counter after each run
+                bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate, std::to_string(display * numPolygons), std::to_string(display));  //increment the counter after each run
             }
             lastFrame = currentFrame;
             fpsCounter = 0;
