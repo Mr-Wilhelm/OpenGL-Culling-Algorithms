@@ -71,6 +71,7 @@ glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 //data gathering variables
 std::string fileName = "FramerateValues.csv";
 int iteration = 1;
+int numPolygons = 12288;
 
 //-----SET ENVIRONMENT BOOLS HERE-----
 enum EnvironmentEnum
@@ -243,6 +244,7 @@ int main()
             throw std::invalid_argument("Invalid chosen environment enum chosen, please choose a valid enum"); //throw an exception to prevent incorrect environments
             break;
         }
+        
 
     }
 
@@ -258,19 +260,19 @@ int main()
     //Main Loop
     while (!glfwWindowShouldClose(window))
     {
-        std::cout << "build test";
+        //std::cout << "build test";
+
+
 
         float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
 
         //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
-
-
         if (deltaTime >= 1.0f / 30.0f)
         {
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
-            std::string data = "Framerate: " + std::to_string((1.0 / deltaTime) * fpsCounter) + "Visible Models: " + std::to_string(total) + "Visible Polygons: " + std::to_string(display);
+            std::string data = "Framerate: " + std::to_string((1.0 / deltaTime) * fpsCounter) + "Visible Polygons: " + std::to_string(display * numPolygons) + "Visible Models: " + std::to_string(display);
             glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
             if (currentFrame - lastTimeWritten >= 1)
             {
@@ -278,9 +280,9 @@ int main()
             }
             lastFrame = currentFrame;
             fpsCounter = 0;
+            total = 0;
+            display = 0;
         }
-
-
 
         processInput(window);
 
