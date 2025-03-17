@@ -67,9 +67,9 @@ int zAxisObjects = 25;
 
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-float offsetDiv = 1.25f;
-float offsetTime = 2.0f;
-float offsetModelPos = 0.04f;
+float offsetDiv = 4.0f;
+float offsetTime = 1.0f;
+float offsetModelPos = 4.0f;
 
 //data gathering variables
 std::string fileName = "FramerateValues.csv";
@@ -352,7 +352,7 @@ int main()
                                     }
                                 }
 
-                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f));
+                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
                                 display++;
                             }
                         }
@@ -401,7 +401,7 @@ int main()
                                     }
                                 }
 
-                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f));
+                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
                                 display++;
                             }
                         }
@@ -417,9 +417,9 @@ int main()
                 {
                     for (auto& boxChild : ourBoundingBox.children)
                     {
-                        float xOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->x);
-                        float yOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->y);
-                        float zOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->z);
+                        float xOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->x);
+                        float yOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->y);
+                        float zOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->z);
 
                         glm::vec3 vectorOffset = glm::vec3(xOffset / offsetDiv, yOffset / offsetDiv, zOffset / offsetDiv);
 
@@ -427,7 +427,7 @@ int main()
 
                         boxChild->transform.SetPos(finalModelPos);
                     }
-                    //ourBoundingBox.UpdateSelfAndChild();
+                    ourBoundingBox.UpdateSelfAndChild();
                     RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
                 }
                 else
