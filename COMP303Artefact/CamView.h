@@ -409,6 +409,12 @@ Sphere CreateSphereBoundingVolume(const Model& model)
 class BoundingBoxObjectClass
 {
 public:
+
+	//indices for the model - these correspond with the for loop used with the model initialisation
+	int x;
+	int y;
+	int z;
+
 	std::list<std::unique_ptr<BoundingBoxObjectClass>> children;
 	BoundingBoxObjectClass* parent = nullptr;
 

@@ -67,6 +67,9 @@ int zAxisObjects = 25;
 
 //model transform
 glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+float offsetDiv = 1.25f;
+float offsetTime = 2.0f;
+float offsetModelPos = 0.04f;
 
 //data gathering variables
 std::string fileName = "FramerateValues.csv";
@@ -157,8 +160,8 @@ int main()
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
     //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = SPARSE;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
@@ -232,9 +235,14 @@ int main()
                         ourBoundingBox.AddChild(ourModel);
                         lastBoundingBox = ourBoundingBox.children.back().get();
 
-                        lastBoundingBox->transform.SetPos({ i * 4.0f, j * 4.0f, k * 4.0f });
+                        lastBoundingBox->transform.SetPos({ i * 40.0f, j * 40.0f, k * 40.0f });
+
+                        lastBoundingBox->x = i; //assign the index of lastBoundingBox via a pointer - https://www.geeksforgeeks.org/arrow-operator-in-c-c-with-examples/
+                        lastBoundingBox->y = j;
+                        lastBoundingBox->z = k;
                     }
                 }
+
             }
             ourBoundingBox.UpdateSelfAndChild();
             break;
@@ -407,6 +415,19 @@ int main()
                 //and here as well - https://catlikecoding.com/unity/tutorials/rendering/part-1/
                 if (isFrustumCulling)
                 {
+                    for (auto& boxChild : ourBoundingBox.children)
+                    {
+                        float xOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->x);
+                        float yOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->y);
+                        float zOffset = 40.0f * glm::sin(currentFrame / offsetTime + boxChild->z);
+
+                        glm::vec3 vectorOffset = glm::vec3(xOffset / offsetDiv, yOffset / offsetDiv, zOffset / offsetDiv);
+
+                        glm::vec3 finalModelPos = glm::vec3(boxChild->x * offsetModelPos, boxChild->y * offsetModelPos, boxChild->z * offsetModelPos) + vectorOffset;
+
+                        boxChild->transform.SetPos(finalModelPos);
+                    }
+                    //ourBoundingBox.UpdateSelfAndChild();
                     RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
                 }
                 else
@@ -417,6 +438,7 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
+                                total++;
                                 glm::vec3 iteratedModelPos = glm::vec3(40.0f * i, 40.0f * j, 40.0f * k);
 
                                 //offset the starting position for each model so they rotate starting in a different position
@@ -429,6 +451,7 @@ int main()
                                 glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
 
                                 DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
+                                display++;
                             }
                         }
                     }
