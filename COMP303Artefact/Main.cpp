@@ -156,8 +156,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
-    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DENSE;
+    chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -366,18 +366,35 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
+                                //glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);    //this should be 10x more than whatever the position is when frustum culling is active
+
+                                //if (isZCulling)
+                                //{
+                                //    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+
+                                //    int retFlag;
+                                //    RunZCulling(viewPos, retFlag);
+                                //    if (retFlag == 3) continue;
+                                //}
+
+                                //DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+
+                                total++;
                                 glm::vec3 iteratedModelPos = glm::vec3(100.0f * i, 100.0f * j, 100.0f * k);
 
                                 if (isZCulling)
                                 {
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-
                                     int retFlag;
                                     RunZCulling(viewPos, retFlag);
-                                    if (retFlag == 3) continue;
+                                    if (retFlag == 3)
+                                    {
+                                        continue;
+                                    }
                                 }
 
-                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
+                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f));
+                                display++;
                             }
                         }
                     }
@@ -388,28 +405,35 @@ int main()
             {
                 //matrix maths for rotations learned here, then refactored - https://learnopengl.com/Getting-started/Transformations
                 //and here as well - https://catlikecoding.com/unity/tutorials/rendering/part-1/
-
-                for (int i = 0; i < xAxisObjects; i++)
+                if (isFrustumCulling)
                 {
-                    for (int j = 0; j < yAxisObjects; j++)
+                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
+                }
+                else
+                {
+                    for (int i = 0; i < xAxisObjects; i++)
                     {
-                        for (int k = 0; k < zAxisObjects; k++)
+                        for (int j = 0; j < yAxisObjects; j++)
                         {
-                            glm::vec3 iteratedModelPos = glm::vec3(40.0f * i, 40.0f * j, 40.0f * k);
+                            for (int k = 0; k < zAxisObjects; k++)
+                            {
+                                glm::vec3 iteratedModelPos = glm::vec3(40.0f * i, 40.0f * j, 40.0f * k);
 
-                            //offset the starting position for each model so they rotate starting in a different position
-                            float xOffset = 40.0f * glm::sin(currentFrame + i);
-                            float yOffset = 40.0f * glm::cos(currentFrame + j);
-                            float zOffset = 40.0f * glm::sin(currentFrame + k);
+                                //offset the starting position for each model so they rotate starting in a different position
+                                float xOffset = 40.0f * glm::sin(currentFrame + i);
+                                float yOffset = 40.0f * glm::cos(currentFrame + j);
+                                float zOffset = 40.0f * glm::sin(currentFrame + k);
 
-                            glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);  //make the offset a vector
+                                glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);  //make the offset a vector
 
-                            glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
+                                glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
 
-                            DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
+                                DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
+                            }
                         }
                     }
                 }
+                
 
                 break;
             }
