@@ -73,7 +73,7 @@ float offsetModelPos = 4.0f;
 
 //data gathering variables
 std::string fileName = "Env1BaseCulling.csv";
-int iteration = 22;
+int iteration = 25;
 int numPolygons = 12288;    //hard coded due to time constraints
 
 //-----SET ENVIRONMENT BOOLS HERE-----
