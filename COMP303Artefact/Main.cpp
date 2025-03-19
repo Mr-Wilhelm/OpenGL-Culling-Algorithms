@@ -35,7 +35,7 @@ void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
 void DrawModels(Shader& ourShader, Model& ourModel);
 
-bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue);
+//bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue);
 
 //settings
 const unsigned int screenWidth = 1200;
@@ -73,8 +73,9 @@ float offsetModelPos = 4.0f;
 
 //data gathering variables
 
-int iteration = 5;
+int iteration = 1;
 std::string fileName = "Test " + std::to_string(iteration) + " Env_0_NoCulling.csv";
+std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
 
 //-----SET ENVIRONMENT BOOLS HERE-----
@@ -97,13 +98,27 @@ void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Mode
     ourModel.Draw(ourShader);
 }
 
-bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue, std::string polyCount, std::string modelCount)
-{
-    std::ofstream fileObject; //creates a variable that writes the data to the file
-    fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
+//bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue, std::string polyCount, std::string modelCount)
+//{
+//    std::ofstream fileObject; //creates a variable that writes the data to the file
+//    fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
+//
+//    //output the iteration, then the current frame, and then the framerate value
+//    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << ", " << polyCount << ", " << modelCount << std::endl;   //writes the data to the file, going to the next line
+//    fileObject.close();
+//
+//    return true;
+//}
 
-    //output the iteration, then the current frame, and then the framerate value
-    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << ", " << polyCount << ", " << modelCount << std::endl;   //writes the data to the file, going to the next line
+bool WriteData(std::string fileName, std::list<std::string> csvData)
+{
+    std::ofstream fileObject;
+    fileObject.open(fileName, std::ios_base::app);  //append to the file rather than overwriting it
+
+    for (int i = 0; i < sizeof(csvData); i++)
+    {
+        fileObject << csvData[i] << std::endl;  //TODO fix this
+    }
     fileObject.close();
 
     return true;
@@ -279,6 +294,7 @@ int main()
 
         if (currentFrame >= 40.0f)
         {
+            bool writeData = WriteData(fileName, dataList);
             glfwSetWindowShouldClose(window, true);
         }
 
@@ -287,12 +303,26 @@ int main()
         {
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
             //TODO write to a list and send it all at the end
-            std::string data = "Framerate: " + std::to_string((1.0 / deltaTime) * fpsCounter) + "Visible Polygons: " + std::to_string(display * numPolygons) + "Visible Models: " + std::to_string(display);
+            std::string data = std::to_string(chosenEnvironment) + 
+                " ," + 
+                std::to_string(chosenEnvironment) + 
+                " , " + 
+                std::to_string(iteration) +  
+                " ," + 
+                std::to_string((1.0 / deltaTime) * fpsCounter) + 
+                " ," + 
+                std::to_string(display * numPolygons) + 
+                " ," + 
+                std::to_string(display);
+
             glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
+
             if (currentFrame - lastTimeWritten >= 1)
             {
-                bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate, std::to_string(display * numPolygons), std::to_string(display));  //increment the counter after each run
+                //bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate, std::to_string(display * numPolygons), std::to_string(display));  //increment the counter after each run
+                dataList.push_back(data);
             }
+
             lastFrame = currentFrame;
             fpsCounter = 0;
             total = 0;
