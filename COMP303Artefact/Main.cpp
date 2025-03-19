@@ -74,9 +74,11 @@ float offsetModelPos = 4.0f;
 //data gathering variables
 
 int iteration = 1;
-std::string fileName = "Test " + std::to_string(iteration) + " Env_0_NoCulling.csv";
+std::string fileName = "Test " + std::to_string(iteration) + " Env_1_NoCulling.csv";
 std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
+
+bool hasStarted = false;
 
 //-----SET ENVIRONMENT BOOLS HERE-----
 enum EnvironmentEnum
@@ -115,9 +117,9 @@ bool WriteData(std::string fileName, std::list<std::string> csvData)
     std::ofstream fileObject;
     fileObject.open(fileName, std::ios_base::app);  //append to the file rather than overwriting it
 
-    for (int i = 0; i < sizeof(csvData); i++)
+    for (const auto& data : csvData)
     {
-        fileObject << csvData[i] << std::endl;  //TODO fix this
+        fileObject << data << std::endl;
     }
     fileObject.close();
 
@@ -175,8 +177,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
-    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DENSE;
+    chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -286,13 +288,13 @@ int main()
     {
         //std::cout << "build test";
 
-
+        
 
         float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
 
-        if (currentFrame >= 40.0f)
+        if (currentFrame >= 30.0f)
         {
             bool writeData = WriteData(fileName, dataList);
             glfwSetWindowShouldClose(window, true);
@@ -305,15 +307,15 @@ int main()
             //TODO write to a list and send it all at the end
             std::string data = std::to_string(chosenEnvironment) + 
                 " ," + 
-                std::to_string(chosenEnvironment) + 
+                std::to_string(currentFrame) +  //time
                 " , " + 
-                std::to_string(iteration) +  
+                std::to_string(iteration) +  //iteration
                 " ," + 
-                std::to_string((1.0 / deltaTime) * fpsCounter) + 
+                std::to_string((1.0 / deltaTime) * fpsCounter) +   //framerate
                 " ," + 
-                std::to_string(display * numPolygons) + 
+                std::to_string(display * numPolygons) +     //poly count
                 " ," + 
-                std::to_string(display);
+                std::to_string(display);    //model count
 
             glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
 
