@@ -42,7 +42,7 @@ const unsigned int screenWidth = 1200;
 const unsigned int screenHeight = 800;
 
 //camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(250.0f, 250.0f, 1000.0f));
 Camera secondCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = screenWidth / 2.0f;
 float lastY = screenHeight / 2.0f;
@@ -159,9 +159,9 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    //chosenEnvironment = DENSE;
+    chosenEnvironment = DENSE;
     //chosenEnvironment = SPARSE;
-    chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
@@ -275,6 +275,11 @@ int main()
         float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
+
+        if (currentFrame >= 40.0f)
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
 
         //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
         if (deltaTime >= 1.0f / 30.0f)
