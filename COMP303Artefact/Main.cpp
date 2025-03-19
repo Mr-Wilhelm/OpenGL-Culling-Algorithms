@@ -72,8 +72,9 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-std::string fileName = "Env1BaseCulling.csv";
-int iteration = 25;
+
+int iteration = 5;
+std::string fileName = "Test " + std::to_string(iteration) + " Env_0_NoCulling.csv";
 int numPolygons = 12288;    //hard coded due to time constraints
 
 //-----SET ENVIRONMENT BOOLS HERE-----
@@ -285,6 +286,7 @@ int main()
         if (deltaTime >= 1.0f / 30.0f)
         {
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
+            //TODO write to a list and send it all at the end
             std::string data = "Framerate: " + std::to_string((1.0 / deltaTime) * fpsCounter) + "Visible Polygons: " + std::to_string(display * numPolygons) + "Visible Models: " + std::to_string(display);
             glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
             if (currentFrame - lastTimeWritten >= 1)
