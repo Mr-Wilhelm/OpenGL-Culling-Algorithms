@@ -79,8 +79,8 @@ std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
 
 float totalFrames = 0;  //total frames used to calculate average
-int totalModels = 0;  //total number of models per frame used to calculate average
-int totalPolygons = 0;    //total number of polygons per frame used to  calculate average
+unsigned long int totalModels = 0;  //total number of models per frame used to calculate average
+unsigned long long int totalPolygons = 0;    //total number of polygons per frame used to  calculate average
 
 bool hasStarted = false;
 
@@ -284,7 +284,6 @@ int main()
     unsigned int total = 0;  //models rendered beforehand
     unsigned int display = 0;   //models currently being rendered on screen
 
-
     //Main Loop
     while (!glfwWindowShouldClose(window))
     {
@@ -307,8 +306,10 @@ int main()
         if (deltaTime >= 1.0f / 30.0f)
         {
             totalFrames += (1.0 / deltaTime) * fpsCounter;  //update totals
-            totalPolygons += display * numPolygons;
+            totalPolygons += (display * numPolygons);
             totalModels += display;
+
+            std::cout << totalFrames << ", " << totalPolygons << " ," << totalModels << std::endl;
 
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
             //TODO write to a list and send it all at the end
