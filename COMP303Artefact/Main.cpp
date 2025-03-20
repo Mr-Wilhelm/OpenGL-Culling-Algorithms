@@ -74,9 +74,13 @@ float offsetModelPos = 4.0f;
 //data gathering variables
 
 int iteration = 1;
-std::string fileName = "Test " + std::to_string(iteration) + " Env_1_NoCulling.csv";
+std::string fileName = "Test " + std::to_string(iteration) + " test test";
 std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
+
+float totalFrames = 0;  //total frames used to calculate average
+int totalModels = 0;  //total number of models per frame used to calculate average
+int totalPolygons = 0;    //total number of polygons per frame used to  calculate average
 
 bool hasStarted = false;
 
@@ -270,10 +274,7 @@ int main()
             throw std::invalid_argument("Invalid chosen environment enum chosen, please choose a valid enum"); //throw an exception to prevent incorrect environments
             break;
         }
-        
-
     }
-
 
 #pragma endregion
 
@@ -283,12 +284,11 @@ int main()
     unsigned int total = 0;  //models rendered beforehand
     unsigned int display = 0;   //models currently being rendered on screen
 
+
     //Main Loop
     while (!glfwWindowShouldClose(window))
     {
         //std::cout << "build test";
-
-        
 
         float currentFrame = static_cast<float>(glfwGetTime()); //getting deltaTime
         deltaTime = currentFrame - lastFrame;
@@ -296,6 +296,9 @@ int main()
 
         if (currentFrame >= 30.0f)
         {
+            std::string data2 = std::to_string(totalFrames / dataList.size()) + " ," + std::to_string(totalPolygons / dataList.size()) + " ," + std::to_string(totalModels / dataList.size());
+            dataList.clear();
+            dataList.push_back(data2);
             bool writeData = WriteData(fileName, dataList);
             glfwSetWindowShouldClose(window, true);
         }
@@ -303,6 +306,10 @@ int main()
         //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
         if (deltaTime >= 1.0f / 30.0f)
         {
+            totalFrames += (1.0 / deltaTime) * fpsCounter;  //update totals
+            totalPolygons += display * numPolygons;
+            totalModels += display;
+
             std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
             //TODO write to a list and send it all at the end
             std::string data = std::to_string(chosenEnvironment) + 
