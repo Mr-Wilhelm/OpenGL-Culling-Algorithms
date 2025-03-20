@@ -298,7 +298,7 @@ int main()
         //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
         if (deltaTime >= 1.0f / 30.0f)
         {
-            if (currentFrame >= 14.0f && currentFrame <= 15.0f)
+            if (currentFrame >= 14.0f && currentFrame <= 15.0f) //this sets models to 0 when it starts gathering data
             {
                 fpsCounter = 0;
                 total = 0;
