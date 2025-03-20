@@ -73,8 +73,8 @@ float offsetModelPos = 4.0f;
 
 //data gathering variables
 
-int iteration = 1;
-std::string fileName = "Test " + std::to_string(iteration) + " test test";
+int iteration = 3;
+std::string fileName = "Env_1_NoCulling_Averages";
 std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
 
@@ -293,50 +293,64 @@ int main()
         deltaTime = currentFrame - lastFrame;
         fpsCounter++;
 
-        if (currentFrame >= 30.0f)
-        {
-            std::string data2 = std::to_string(totalFrames / dataList.size()) + " ," + std::to_string(totalPolygons / dataList.size()) + " ," + std::to_string(totalModels / dataList.size());
-            dataList.clear();
-            dataList.push_back(data2);
-            bool writeData = WriteData(fileName, dataList);
-            glfwSetWindowShouldClose(window, true);
-        }
+
 
         //std::cout << "Current Frame: " << currentFrame << std::endl;    //currentFrame acts as a timer
         if (deltaTime >= 1.0f / 30.0f)
         {
-            totalFrames += (1.0 / deltaTime) * fpsCounter;  //update totals
-            totalPolygons += (display * numPolygons);
-            totalModels += display;
-
-            std::cout << totalFrames << ", " << totalPolygons << " ," << totalModels << std::endl;
-
-            std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
-            //TODO write to a list and send it all at the end
-            std::string data = std::to_string(chosenEnvironment) + 
-                " ," + 
-                std::to_string(currentFrame) +  //time
-                " , " + 
-                std::to_string(iteration) +  //iteration
-                " ," + 
-                std::to_string((1.0 / deltaTime) * fpsCounter) +   //framerate
-                " ," + 
-                std::to_string(display * numPolygons) +     //poly count
-                " ," + 
-                std::to_string(display);    //model count
-
-            glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
-
-            if (currentFrame - lastTimeWritten >= 1)
+            if (currentFrame >= 14.0f && currentFrame <= 15.0f)
             {
-                //bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate, std::to_string(display * numPolygons), std::to_string(display));  //increment the counter after each run
-                dataList.push_back(data);
+                fpsCounter = 0;
+                total = 0;
+                display = 0;
             }
 
-            lastFrame = currentFrame;
-            fpsCounter = 0;
-            total = 0;
-            display = 0;
+            if (currentFrame >= 15.0f)  //start collecting data after 15 seconds, startup stats are inconsistent and can mess with averages. Prevent unusually high framerate average values
+            {
+                totalFrames += (1.0 / deltaTime) * fpsCounter;  //update totals
+                totalPolygons += (display * numPolygons);
+                totalModels += display;
+
+                std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
+                //TODO write to a list and send it all at the end
+                std::string data = std::to_string(chosenEnvironment) +
+                    " ," +
+                    std::to_string(currentFrame) +  //time
+                    " , " +
+                    std::to_string(iteration) +  //iteration
+                    " ," +
+                    std::to_string((1.0 / deltaTime) * fpsCounter) +   //framerate
+                    " ," +
+                    std::to_string(display * numPolygons) +     //poly count
+                    " ," +
+                    std::to_string(display);    //model count
+
+                glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
+
+                if (currentFrame - lastTimeWritten >= 1)
+                {
+                    //bool framerateWrite = WriteFramerate(fileName, std::to_string(chosenEnvironment), std::to_string(iteration), std::to_string(currentFrame), framerate, std::to_string(display * numPolygons), std::to_string(display));  //increment the counter after each run
+                    dataList.push_back(data);
+                }
+
+                lastFrame = currentFrame;
+                fpsCounter = 0;
+                total = 0;
+                display = 0;
+            }
+            
+        }
+
+        if (currentFrame >= 30.0f)
+        {
+            std::string data2 = std::to_string(iteration) +
+                " ," + std::to_string(totalFrames / dataList.size()) +
+                " ," + std::to_string(totalPolygons / dataList.size()) +
+                " ," + std::to_string(totalModels / dataList.size());
+            dataList.clear();
+            dataList.push_back(data2);
+            bool writeData = WriteData(fileName, dataList);
+            glfwSetWindowShouldClose(window, true);
         }
 
         processInput(window);
