@@ -74,7 +74,7 @@ float offsetModelPos = 4.0f;
 //data gathering variables
 
 int iteration = 38;
-std::string fileName = "Env_1_NoCulling_Averages";
+std::string fileName = "Env_2_NoCulling_Averages";
 std::list<std::string> dataList;
 int numPolygons = 12288;    //hard coded due to time constraints
 
@@ -182,8 +182,8 @@ int main()
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
     //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = SPARSE;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
