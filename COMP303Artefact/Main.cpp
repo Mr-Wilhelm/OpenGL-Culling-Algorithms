@@ -386,7 +386,7 @@ int main()
                 else
                 {
                     unsigned long int modelsCulled = 0;
-                    unsigned long long int polygonsCulled = 0;
+                    unsigned long int modelsZCulled = 0;
 
                     for (int i = 0; i < xAxisObjects; i++)
                     {
@@ -394,25 +394,20 @@ int main()
                         {
                             for (int k = 0; k < zAxisObjects; k++)
                             {
-                                //glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);    //this should be 10x more than whatever the position is when frustum culling is active
-
-                                //if (isZCulling)
-                                //{
-                                //    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-
-                                //    int retFlag;
-                                //    RunZCulling(viewPos, retFlag);
-                                //    if (retFlag == 3) continue;
-                                //}
-
-                                //DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
-
                                 total++;
                                 glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
 
                                 if (isZCulling)
                                 {
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        modelsZCulled++;
+                                    }
                                 }
 
                                 DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
@@ -420,6 +415,7 @@ int main()
                             }
                         }
                     }
+                    std::cout << "Z Culled models: " << modelsZCulled << " Rendered Models: " << display << std::endl;
                 }
                 break;
             }
