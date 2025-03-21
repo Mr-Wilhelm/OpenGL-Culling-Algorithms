@@ -26,6 +26,7 @@ inline void RunBackFaceCulling(GLFWwindow* window)
         if (!isBackCulling)
         {
             glEnable(GL_CULL_FACE);
+            std::cout << "enable back face culling" << std::endl;
             isBackCulling = true;
         }
     }
