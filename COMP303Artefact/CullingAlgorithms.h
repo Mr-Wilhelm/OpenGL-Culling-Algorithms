@@ -10,12 +10,14 @@ bool isBackCulling;
 
 GLFWwindow* testWindow = glfwCreateWindow(1200, 800, "testWindow", nullptr, nullptr);
 
-void RunZCulling(glm::vec4& viewPos, int& retFlag)
+void RunZCulling(glm::vec4& viewPos, int& retFlag, unsigned long int& modelsCulled)
 {
     retFlag = 1;
-    if (viewPos.z > farPlane)
+    if (viewPos.z > farPlane)   //skip the rendering process of the model. This prevents it from being drawn outright
     {
-        { retFlag = 3; return; };   //skip the rendering process of the model. This prevents it from being drawn outright
+        modelsCulled++;
+        retFlag = 3;
+        return;
     }
 }
 inline void RunBackFaceCulling(GLFWwindow* window)
@@ -26,7 +28,6 @@ inline void RunBackFaceCulling(GLFWwindow* window)
         if (!isBackCulling)
         {
             glEnable(GL_CULL_FACE);
-            std::cout << "enable back face culling" << std::endl;
             isBackCulling = true;
         }
     }
