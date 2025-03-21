@@ -442,6 +442,7 @@ int main()
                                 if (isZCulling)
                                 {
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+                                    //TODO add the other z culling code into here, and the dynamic scene too somehow
                                 }
 
                                 DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
