@@ -74,7 +74,7 @@ float offsetModelPos = 4.0f;
 //data gathering variables
 
 int iteration = 38;
-std::string fileName = "Env_1_BackfaceCulling_Averages.csv";
+std::string fileName = "Env_2_BackfaceCulling_Averages.csv";
 std::list<std::string> dataList;
 
 //poly count reduction percentage is approx 50% on cubes, and just above that for spheres.
@@ -187,8 +187,8 @@ int main()
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
     //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = SPARSE;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
