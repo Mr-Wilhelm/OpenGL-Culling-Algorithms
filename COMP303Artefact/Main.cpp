@@ -76,7 +76,12 @@ float offsetModelPos = 4.0f;
 int iteration = 6;
 std::string fileName = "Env_0_BackfaceCulling_Averages.csv";
 std::list<std::string> dataList;
-int numPolygons = 12288;    //hard coded due to time constraints
+
+//poly count reduction percentage is approx 50% on cubes, and just above that for spheres.
+//this program uses spheres, so for backface culling the poly count is reduced by 50% to be conservative.
+//https://www.researchgate.net/profile/Norman-Badler/publication/228530273_A_fast_real-time_back-face_culling_approach/links/551043030cf2ba84483d424a/A-fast-real-time-back-face-culling-approach.pdf
+//https://www.gamedev.net/reference/articles/article1088.asp
+int numPolygons = (12288 / 2);    //hard coded due to time constraints
 
 float totalFrames = 0;  //total frames used to calculate average
 unsigned long int totalModels = 0;  //total number of models per frame used to calculate average
