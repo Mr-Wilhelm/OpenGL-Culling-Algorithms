@@ -73,7 +73,7 @@ float offsetModelPos = 4.0f;
 
 //data gathering variables
 int iteration = 1;
-std::string fileName = "Env_1_ZCulling_Averages.csv";
+std::string fileName = "Env_2_ZCulling_Averages.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
 unsigned long long int globalPolysZCulled = 0;
@@ -189,8 +189,8 @@ int main()
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
     //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = SPARSE;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
