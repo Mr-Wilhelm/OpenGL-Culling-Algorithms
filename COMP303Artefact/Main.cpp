@@ -72,9 +72,11 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = -1;
-std::string fileName = "testestest";
+int iteration = 2;
+std::string fileName = "Env_0_ZCulling_Averages";
 std::list<std::string> dataList;
+unsigned long int globalModelsZCulled = 0;
+unsigned long long int globalPolysZCulled = 0;
 
 
 //poly count reduction percentage is approx 50% on cubes, and just above that for spheres.
@@ -313,8 +315,8 @@ int main()
             if (currentFrame >= 15.0f)  //start collecting data after 15 seconds, startup stats are inconsistent and can mess with averages. Prevent unusually high framerate average values
             {
                 totalFrames += (1.0 / deltaTime) * fpsCounter;  //update totals
-                totalPolygons += (display * numPolygons);
-                totalModels += display;
+                totalPolygons += (display * numPolygons) - globalPolysZCulled;
+                totalModels += display - globalModelsZCulled;
 
                 std::string framerate = std::to_string((1.0 / deltaTime) * fpsCounter); //get framerate
                 //TODO write to a list and send it all at the end
@@ -326,9 +328,9 @@ int main()
                     " ," +
                     std::to_string((1.0 / deltaTime) * fpsCounter) +   //framerate
                     " ," +
-                    std::to_string(display * numPolygons) +     //poly count
+                    std::to_string((display * numPolygons) - globalPolysZCulled) +     //poly count
                     " ," +
-                    std::to_string(display);    //model count
+                    std::to_string(display - globalModelsZCulled);    //model count
 
                 glfwSetWindowTitle(window, data.c_str());  //assign it to the title of the window (to avoid having to make UI)
 
@@ -402,11 +404,13 @@ int main()
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
                                     if (viewPos.z < -0.1f && viewPos.z > -farPlane)
                                     {
-                                        return;
+                                        
                                     }
                                     else
                                     {
                                         modelsZCulled++;
+                                        globalModelsZCulled = modelsZCulled;
+                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
                                     }
                                 }
 
@@ -415,7 +419,7 @@ int main()
                             }
                         }
                     }
-                    std::cout << "Z Culled models: " << modelsZCulled << " Rendered Models: " << display << std::endl;
+                    //std::cout << "Z Culled models: " << modelsZCulled << " Rendered Models: " << display - globalModelsZCulled << " RenderedPolygons: " << (display * numPolygons) - (globalModelsZCulled * numPolygons) << std::endl;
                 }
                 break;
             }
@@ -428,7 +432,7 @@ int main()
                 else
                 {
                     unsigned long int modelsCulled = 0;
-                    unsigned long long int polygonsCulled = 0;
+                    unsigned long long int modelsZCulled = 0;
 
                     for (int i = 0; i < xAxisObjects; i++)
                     {
@@ -442,7 +446,14 @@ int main()
                                 if (isZCulling)
                                 {
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-                                    //TODO add the other z culling code into here, and the dynamic scene too somehow
+                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
+                                    {
+                                        
+                                    }
+                                    else
+                                    {
+                                        modelsZCulled++;
+                                    }
                                 }
 
                                 DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
