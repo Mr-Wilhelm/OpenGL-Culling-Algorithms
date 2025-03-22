@@ -73,7 +73,7 @@ float offsetModelPos = 4.0f;
 
 //data gathering variables
 int iteration = 1;
-std::string fileName = "Env_1_ZCulling_Averages";
+std::string fileName = "Env_1_ZCulling_Averages.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
 unsigned long long int globalPolysZCulled = 0;
@@ -83,7 +83,7 @@ unsigned long long int globalPolysZCulled = 0;
 //this program uses spheres, so for backface culling the poly count is reduced by 50% to be conservative.
 //https://www.researchgate.net/profile/Norman-Badler/publication/228530273_A_fast_real-time_back-face_culling_approach/links/551043030cf2ba84483d424a/A-fast-real-time-back-face-culling-approach.pdf
 //https://www.gamedev.net/reference/articles/article1088.asp
-int numPolygons = (12288 / 2);    //hard coded due to time constraints
+int numPolygons = (12288);    //hard coded due to time constraints
 
 float totalFrames = 0;  //total frames used to calculate average
 unsigned long int totalModels = 0;  //total number of models per frame used to calculate average
@@ -188,8 +188,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
-    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DENSE;
+    chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -448,11 +448,13 @@ int main()
                                     glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
                                     if (viewPos.z < -0.1f && viewPos.z > -farPlane)
                                     {
-                                        
+
                                     }
                                     else
                                     {
                                         modelsZCulled++;
+                                        globalModelsZCulled = modelsZCulled;
+                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
                                     }
                                 }
 
@@ -487,6 +489,9 @@ int main()
                 }
                 else
                 {
+                    unsigned long int modelsCulled = 0;
+                    unsigned long long int modelsZCulled = 0;
+
                     for (int i = 0; i < xAxisObjects; i++)
                     {
                         for (int j = 0; j < yAxisObjects; j++)
@@ -504,6 +509,21 @@ int main()
                                 glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);  //make the offset a vector
 
                                 glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
+
+                                if (isZCulling)
+                                {
+                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
+                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        modelsZCulled++;
+                                        globalModelsZCulled = modelsZCulled;
+                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
+                                    }
+                                }
 
                                 DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
                                 display++;
