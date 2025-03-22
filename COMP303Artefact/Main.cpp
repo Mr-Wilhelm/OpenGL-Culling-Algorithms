@@ -72,8 +72,8 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = 2;
-std::string fileName = "Env_0_ZCulling_Averages";
+int iteration = 1;
+std::string fileName = "Env_1_ZCulling_Averages";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
 unsigned long long int globalPolysZCulled = 0;
