@@ -16,8 +16,6 @@
 #include<list>
 #include<memory>
 
-//TODO: Assign an AABB to each model and get the polycount constantly based off of that perhaps?
-
 class BoundingBoxObject : public Model //declare a bounding box inheriting from model
 {
 public:
@@ -34,8 +32,6 @@ void processInput(GLFWwindow* window);
 void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
 void DrawModels(Shader& ourShader, Model& ourModel);
-
-//bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue);
 
 //settings
 const unsigned int screenWidth = 1200;
@@ -72,7 +68,7 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = 1;
+int iteration = 38;
 std::string fileName = "Env_2_ZCulling_Averages.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
@@ -110,18 +106,6 @@ void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Mode
     ourShader.setMat4("model", iteratedModel);
     ourModel.Draw(ourShader);
 }
-
-//bool WriteFramerate(std::string fileName, std::string iteration, std::string chosenEnvironment, std::string currentFrame, std::string framerateValue, std::string polyCount, std::string modelCount)
-//{
-//    std::ofstream fileObject; //creates a variable that writes the data to the file
-//    fileObject.open(fileName, std::ios_base::app);    //std::ios_base::app appends to the file, instead of overwriting completely.
-//
-//    //output the iteration, then the current frame, and then the framerate value
-//    fileObject << iteration << " ," << chosenEnvironment << " ," << currentFrame << " ," << framerateValue << ", " << polyCount << ", " << modelCount << std::endl;   //writes the data to the file, going to the next line
-//    fileObject.close();
-//
-//    return true;
-//}
 
 bool WriteData(std::string fileName, std::list<std::string> csvData)
 {
