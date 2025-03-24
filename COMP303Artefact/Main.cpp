@@ -68,8 +68,8 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = 38;
-std::string fileName = "Env_1_FrustumCulling_Averages.csv";
+int iteration = 19;
+std::string fileName = "Env_2_FrustumCulling_Averages.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
 unsigned long long int globalPolysZCulled = 0;
@@ -173,8 +173,8 @@ int main()
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
     //chosenEnvironment = DENSE;
-    chosenEnvironment = SPARSE;
-    //chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = SPARSE;
+    chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
@@ -332,7 +332,7 @@ int main()
             
         }
 
-        if (currentFrame >= 30.0f)
+        if (currentFrame >= 21.0f)
         {
             std::string data2 = std::to_string(iteration) +
                 " ," + std::to_string(totalFrames / dataList.size()) +
