@@ -68,7 +68,7 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = 1;
+int iteration = 38;
 std::string fileName = "Env_2_AllCulling_Averages.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
