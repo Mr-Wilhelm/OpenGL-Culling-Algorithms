@@ -8,6 +8,10 @@ library(dplyr)
 # "mutate()" is a dplyr function, that adds new variables to existing data
 # https://dplyr.tidyverse.org/
 
+#for this data, add the culling algorithms as a binary, and set to 0 or 1 for active or not.
+# use linear regression - lm(avg..fps ~ avg..models + Env1 + Env2 + Env3 + Alg1 + Alg2 + Alg3, dataFrame)
+# if this doens't work, ANOVA works fine
+
 env0NoCulling <- read.csv("Env_0_NoCulling_Averages.csv") %>%   #reads the csv file
   mutate(Env = "DENSE", Alg = "None") #adds the environment and algorithm headings
 env1NoCulling <- read.csv("Env_1_NoCulling_Averages.csv") %>%
