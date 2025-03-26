@@ -30,3 +30,4 @@ env0All <- read.csv(Env_0_AllCulling_Averages)
 env1All <- read.csv(Env_1_AllCulling_Averages)
 env2All <- read.csv(Env_2_AllCulling_Averages)
 
+
