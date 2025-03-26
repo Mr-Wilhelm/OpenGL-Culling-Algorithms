@@ -1,4 +1,4 @@
-iteration,average fps,average poly count,average model count
+iteration,avg. fps,avg. polys,avg. models
 1,27.265247,68309801,11118
 2,30.408003,61445751,10000
 3,35.507645,61135758,9950
