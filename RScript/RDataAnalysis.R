@@ -64,4 +64,12 @@ env1All <- read.csv("Env_1_AllCulling_Averages.csv") %>%
 env2All <- read.csv("Env_2_AllCulling_Averages.csv") %>%
   mutate(Env = "DYNAMIC", Alg = "All")
 
+dataFrame <- rbind(env0NoCulling, env1NoCulling, env1NoCulling,
+                   env0Frustum, env1Frustum, env2Frustum,
+                   env0Back, env1Back, env2Back,
+                   env0Z, env1Z, env2Z,
+                   env0FrustumBack, env1FrustumBack, env2FrustumBack,
+                   env0FrustumZ, env1FrustumZ, env2FrustumZ,
+                   env0BackZ, env1BackZ, env2BackZ,
+                   env0All, env1All, env2All)
 
