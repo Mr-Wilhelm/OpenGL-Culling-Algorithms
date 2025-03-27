@@ -82,35 +82,47 @@ dataFrame <- rbind(env0NoCulling, env1NoCulling, env1NoCulling,
 model <- lm(avg..fps ~ avg..polys + avg..models + Env + BFC + FVC + ZC, dataFrame)
 summary(model)
 
+#plotting dataframes: https://www.geeksforgeeks.org/how-to-plot-all-the-columns-of-a-dataframe-in-r/
+#box plots code found here: https://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
+
 ggplot(dataFrame, 
        aes(x = Env, y = avg..fps, fill = Env)) +
   geom_boxplot() +
   labs(title = "FPS Across Environments", x = "Environment", y = "Average FPS") +
-  theme_minimal()
+  theme_bw()
 
 ggplot(dataFrame, 
        aes(x = Env, y = avg..fps, fill = factor(BFC))) +
   geom_boxplot() +
   labs(title = "FPS Based on back face culling", x = "Environment", y = "Average FPS") +
-  theme_minimal()
+  theme_bw()
 
 ggplot(dataFrame, 
        aes(x = Env, y = avg..fps, fill = factor(FVC))) +
   geom_boxplot() +
   labs(title = "FPS Based on Frustum View Culling", x = "Environment", y = "Average FPS") +
-  theme_minimal()
+  theme_bw()
 
 ggplot(dataFrame, 
        aes(x = Env, y = avg..fps, fill = factor(ZC))) +
   geom_boxplot() +
   labs(title = "FPS Based on z Culling culling", x = "Environment", y = "Average FPS") +
-  theme_minimal()
+  theme_bw()
+
+#facet grid code found here: https://ggplot2.tidyverse.org/reference/facet_grid.html
 
 ggplot(dataFrame, 
-       aes(x = avg..models, y = avg..fps, color = Env)) +
-  geom_point(alpha = 1.0) +
-  geom_smooth(method = "1m", se = FALSE) +
-  facet_grid(BFC ~ FVC) +
-  labs(title = "FPS Trends based on Back face culling and Frustum Culling combined", x =  "Average Models", y = "Average FPS") +
-  theme_minimal()
+       aes(x = avg..models / 1000, y = avg..fps, color = Env)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "1m", confidenceInterval = FALSE) +
+  facet_grid(FVC ~ ZC + BFC) +
+  labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Models (Thousands)", y = "Average FPS") +
+  theme_bw()
 
+ggplot(dataFrame, 
+       aes(x = avg..polys / 1000000, y = avg..fps, color = Env)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "1m", confidenceInterval = FALSE) +
+  facet_grid(FVC ~ ZC + BFC) +
+  labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Polygons (Millions)", y = "Average FPS") +
+  theme_bw()
