@@ -15,7 +15,7 @@ library(scales)
 # if this doens't work, ANOVA works fine
 
 env0NoCulling <- read.csv("Env_0_NoCulling_Averages.csv") %>%   #reads the csv file
-  mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 0) #adds the environment and algorithm headings
+  mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 0) #adds new headings - binaries idea for culling algorithms given by Michael Scott (thankyou!)
 env1NoCulling <- read.csv("Env_1_NoCulling_Averages.csv") %>%
   mutate(Env = "SPARSE", BFC = 0, FVC = 0, ZC = 0 )
 env2NoCulling <- read.csv("Env_2_NoCulling_Averages.csv") %>% 
@@ -83,31 +83,6 @@ model <- lm(avg..fps ~ avg..polys + avg..models + Env + BFC + FVC + ZC, dataFram
 summary(model)
 
 #plotting dataframes: https://www.geeksforgeeks.org/how-to-plot-all-the-columns-of-a-dataframe-in-r/
-#box plots code found here: https://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = Env)) +
-  geom_boxplot() +
-  labs(title = "FPS Across Environments", x = "Environment", y = "Average FPS") +
-  theme_bw()
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(BFC))) +
-  geom_boxplot() +
-  labs(title = "FPS Based on back face culling", x = "Environment", y = "Average FPS") +
-  theme_bw()
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(FVC))) +
-  geom_boxplot() +
-  labs(title = "FPS Based on Frustum View Culling", x = "Environment", y = "Average FPS") +
-  theme_bw()
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(ZC))) +
-  geom_boxplot() +
-  labs(title = "FPS Based on z Culling culling", x = "Environment", y = "Average FPS") +
-  theme_bw()
 
 #facet grid code found here: https://ggplot2.tidyverse.org/reference/facet_grid.html
 
@@ -126,3 +101,4 @@ ggplot(dataFrame,
   facet_grid(FVC ~ ZC + BFC) +
   labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Polygons (Millions)", y = "Average FPS") +
   theme_bw()
+
