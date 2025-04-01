@@ -14,63 +14,70 @@ library(scales)
 # use linear regression - lm(avg..fps ~ avg..models + Env1 + Env2 + Env3 + Alg1 + Alg2 + Alg3, dataFrame)
 # if this doens't work, ANOVA works fine
 
-env0NoCulling <- read.csv("Env_0_NoCulling_Averages.csv") %>%   #reads the csv file
-  mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 0) #adds new headings - binaries idea for culling algorithms given by Michael Scott (thankyou!)
-env1NoCulling <- read.csv("Env_1_NoCulling_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 0, FVC = 0, ZC = 0 )
-env2NoCulling <- read.csv("Env_2_NoCulling_Averages.csv") %>% 
-  mutate(Env = "DYNAMIC", BFC = 0, FVC = 0, ZC = 0)
+#plotting dataframes: https://www.geeksforgeeks.org/how-to-plot-all-the-columns-of-a-dataframe-in-r/
+#box plots: https://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
+#vectors: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/c
+Func_ReadFiles <- function()
+{
+  env0NoCulling <- read.csv("Env_0_NoCulling_Averages.csv") %>%   #reads the csv file
+    mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 0) #adds new headings - binaries idea for culling algorithms given by Michael Scott (thankyou!)
+  env1NoCulling <- read.csv("Env_1_NoCulling_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 0, FVC = 0, ZC = 0 )
+  env2NoCulling <- read.csv("Env_2_NoCulling_Averages.csv") %>% 
+    mutate(Env = "DYNAMIC", BFC = 0, FVC = 0, ZC = 0)
+  
+  env0Frustum <- read.csv("Env_0_FrustumCulling_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 0, FVC = 1, ZC = 0)
+  env1Frustum <- read.csv("Env_1_FrustumCulling_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 0, FVC = 1, ZC = 0)
+  env2Frustum <- read.csv("Env_2_FrustumCulling_Averages.csv") %>% 
+    mutate(Env = "DYNAMIC", BFC = 0, FVC = 1, ZC = 0)
+  
+  env0Back <- read.csv("Env_0_BackfaceCulling_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 1, FVC = 0, ZC = 0)
+  env1Back <- read.csv("Env_1_BackfaceCulling_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 1, FVC = 0, ZC = 0)
+  env2Back <- read.csv("Env_2_BackfaceCulling_Averages.csv") %>% 
+    mutate(Env = "DYNAMIC", BFC = 1, FVC = 0, ZC = 0)
+  
+  env0Z <- read.csv("Env_0_ZCulling_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 1)
+  env1Z <- read.csv("Env_1_ZCulling_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 0, FVC = 0, ZC = 1)
+  env2Z <- read.csv("Env_2_ZCulling_Averages.csv") %>%
+    mutate(Env = "DYNAMIC", BFC = 0, FVC = 0, ZC = 1)
+  
+  env0FrustumBack <- read.csv("Env_0_BackfaceAndFrustum_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 1, FVC = 1, ZC = 0)
+  env1FrustumBack <- read.csv("Env_1_BackfaceAndFrustum_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 1, FVC = 1, ZC = 0)
+  env2FrustumBack <- read.csv("Env_2_BackfaceAndFrustum_Averages.csv") %>%
+    mutate(Env = "DYNAMIC", BFC = 1, FVC = 1, ZC = 0)
+  
+  env0FrustumZ <- read.csv("Env_0_FrustumAndZ_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 0, FVC = 1, ZC = 1)
+  env1FrustumZ <- read.csv("Env_1_FrustumAndZ_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 0, FVC = 1, ZC = 1)
+  env2FrustumZ <- read.csv("Env_2_FrustumAndZ_Averages.csv") %>%
+    mutate(Env = "DYNAMIC", BFC = 0, FVC = 1, ZC = 1)
+  
+  env0BackZ <- read.csv("Env_0_BackfaceAndZ_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 1, FVC = 0, ZC = 1)
+  env1BackZ <- read.csv("Env_1_BackfaceAndZ_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 1, FVC = 0, ZC = 1)
+  env2BackZ <- read.csv("Env_2_BackfaceAndZ_Averages.csv") %>%
+    mutate(Env = "DYNAMIC", BFC = 1, FVC = 0, ZC = 1)
+  
+  env0All <- read.csv("Env_0_AllCulling_Averages.csv") %>%
+    mutate(Env = "DENSE", BFC = 1, FVC = 1, ZC = 1)
+  env1All <- read.csv("Env_1_AllCulling_Averages.csv") %>%
+    mutate(Env = "SPARSE", BFC = 1, FVC = 1, ZC = 1)
+  env2All <- read.csv("Env_2_AllCulling_Averages.csv") %>%
+    mutate(Env = "DYNAMIC", BFC = 1, FVC = 1, ZC = 1)
+}
 
-env0Frustum <- read.csv("Env_0_FrustumCulling_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 0, FVC = 1, ZC = 0)
-env1Frustum <- read.csv("Env_1_FrustumCulling_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 0, FVC = 1, ZC = 0)
-env2Frustum <- read.csv("Env_2_FrustumCulling_Averages.csv") %>% 
-  mutate(Env = "DYNAMIC", BFC = 0, FVC = 1, ZC = 0)
 
-env0Back <- read.csv("Env_0_BackfaceCulling_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 1, FVC = 0, ZC = 0)
-env1Back <- read.csv("Env_1_BackfaceCulling_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 1, FVC = 0, ZC = 0)
-env2Back <- read.csv("Env_2_BackfaceCulling_Averages.csv") %>% 
-  mutate(Env = "DYNAMIC", BFC = 1, FVC = 0, ZC = 0)
-
-env0Z <- read.csv("Env_0_ZCulling_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 0, FVC = 0, ZC = 1)
-env1Z <- read.csv("Env_1_ZCulling_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 0, FVC = 0, ZC = 1)
-env2Z <- read.csv("Env_2_ZCulling_Averages.csv") %>%
-  mutate(Env = "DYNAMIC", BFC = 0, FVC = 0, ZC = 1)
-
-env0FrustumBack <- read.csv("Env_0_BackfaceAndFrustum_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 1, FVC = 1, ZC = 0)
-env1FrustumBack <- read.csv("Env_1_BackfaceAndFrustum_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 1, FVC = 1, ZC = 0)
-env2FrustumBack <- read.csv("Env_2_BackfaceAndFrustum_Averages.csv") %>%
-  mutate(Env = "DYNAMIC", BFC = 1, FVC = 1, ZC = 0)
-
-env0FrustumZ <- read.csv("Env_0_FrustumAndZ_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 0, FVC = 1, ZC = 1)
-env1FrustumZ <- read.csv("Env_1_FrustumAndZ_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 0, FVC = 1, ZC = 1)
-env2FrustumZ <- read.csv("Env_2_FrustumAndZ_Averages.csv") %>%
-  mutate(Env = "DYNAMIC", BFC = 0, FVC = 1, ZC = 1)
-
-env0BackZ <- read.csv("Env_0_BackfaceAndZ_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 1, FVC = 0, ZC = 1)
-env1BackZ <- read.csv("Env_1_BackfaceAndZ_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 1, FVC = 0, ZC = 1)
-env2BackZ <- read.csv("Env_2_BackfaceAndZ_Averages.csv") %>%
-  mutate(Env = "DYNAMIC", BFC = 1, FVC = 0, ZC = 1)
-
-env0All <- read.csv("Env_0_AllCulling_Averages.csv") %>%
-  mutate(Env = "DENSE", BFC = 1, FVC = 1, ZC = 1)
-env1All <- read.csv("Env_1_AllCulling_Averages.csv") %>%
-  mutate(Env = "SPARSE", BFC = 1, FVC = 1, ZC = 1)
-env2All <- read.csv("Env_2_AllCulling_Averages.csv") %>%
-  mutate(Env = "DYNAMIC", BFC = 1, FVC = 1, ZC = 1)
-
-dataFrame <- rbind(env0NoCulling, env1NoCulling, env1NoCulling,
+dataFrame <- rbind(env0NoCulling, env1NoCulling, env2NoCulling,
                    env0Frustum, env1Frustum, env2Frustum,
                    env0Back, env1Back, env2Back,
                    env0Z, env1Z, env2Z,
@@ -82,38 +89,9 @@ dataFrame <- rbind(env0NoCulling, env1NoCulling, env1NoCulling,
 model <- lm(avg..fps ~ avg..polys + avg..models + Env + BFC + FVC + ZC, dataFrame)
 summary(model)
 
-#plotting dataframes: https://www.geeksforgeeks.org/how-to-plot-all-the-columns-of-a-dataframe-in-r/
-#box plots: https://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
 
-ggplot(dataFrame, aes(x = avg..polys, y = avg..fps, color = Env)) + geom_point() + geom_smooth(method =lm) +  theme_bw() +
-  labs(
-    title = "Polygon Count against average FPS by environment",
-    x = "Polygon Count",
-    y = "Average FPS"
-  )
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(BFC))) + geom_boxplot() + labs(
-         title = "FPS Based on back face culling",
-         x = "Environment",
-         y = "Average FPS") +
-  theme_minimal()
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(FVC))) + geom_boxplot() + labs(
-    title = "FPS Based on Frustum View Culling",
-    x = "Environment",
-    y = "Average FPS") +
-  theme_minimal()
-
-ggplot(dataFrame, 
-       aes(x = Env, y = avg..fps, fill = factor(ZC))) + geom_boxplot() + labs(
-         title = "FPS Based on z Culling culling",
-         x = "Environment",
-         y = "Average FPS") +
-  theme_minimal()
-
-Func_Hypothesis1 <- function(){
+Func_Hypothesis1And2 <- function()
+{
   dataFrame <- dataFrame %>% mutate(activeAlgorithms = FVC + BFC + ZC)
   ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..models)) + 
     stat_summary(fun = mean, geom = "point", size = 3) + stat_summary(fun = mean, geom = "line", group = 1) +
@@ -121,4 +99,41 @@ Func_Hypothesis1 <- function(){
     theme_bw()
 }
 
-Func_Hypothesis1()
+Func_Hypothesis3 <- function()
+{
+  ggplot(dataFrame, aes(x = avg..polys, y = avg..fps, color = Env)) + geom_point() + geom_smooth(method =lm) +  theme_bw() +
+    labs(
+      title = "Polygon Count against average FPS by environment",
+      x = "Polygon Count",
+      y = "Average FPS"
+    )
+}
+
+Func_Hypothesis4 <- function()
+{
+  ggplot(dataFrame, 
+         aes(x = Env, y = avg..fps, fill = factor(BFC))) + geom_boxplot() + labs(
+           title = "FPS Based on back face culling",
+           x = "Environment",
+           y = "Average FPS") +
+    theme_minimal()
+  
+  ggplot(dataFrame, 
+         aes(x = Env, y = avg..fps, fill = factor(FVC))) + geom_boxplot() + labs(
+           title = "FPS Based on Frustum View Culling",
+           x = "Environment",
+           y = "Average FPS") +
+    theme_minimal()
+  
+  ggplot(dataFrame, 
+         aes(x = Env, y = avg..fps, fill = factor(ZC))) + geom_boxplot() + labs(
+           title = "FPS Based on z Culling culling",
+           x = "Environment",
+           y = "Average FPS") +
+    theme_minimal()
+}
+
+Func_ReadFiles()
+Func_Hypothesis1And2()
+Func_Hypothesis3()
+Func_Hypothesis4()
