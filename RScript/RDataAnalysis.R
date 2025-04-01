@@ -86,19 +86,36 @@ summary(model)
 
 #facet grid code found here: https://ggplot2.tidyverse.org/reference/facet_grid.html
 
-ggplot(dataFrame, 
-       aes(x = avg..models / 1000, y = avg..fps, color = Env)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "1m", confidenceInterval = FALSE) +
-  facet_grid(FVC ~ ZC + BFC) +
-  labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Models (Thousands)", y = "Average FPS") +
-  theme_bw()
+#ggplot(dataFrame, aes(x = avg..polys / 1000000, y = avg..fps, color = Env)) +
+  #geom_point() + geom_smooth(method =lm) +  theme_bw()
 
-ggplot(dataFrame, 
-       aes(x = avg..polys / 1000000, y = avg..fps, color = Env)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "1m", confidenceInterval = FALSE) +
-  facet_grid(FVC ~ ZC + BFC) +
-  labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Polygons (Millions)", y = "Average FPS") +
-  theme_bw()
+
+#ggplot(dataFrame, 
+       #aes(x = avg..models / 1000, y = avg..fps, color = Env)) +
+  #geom_point(alpha = 0.6) +
+  #geom_smooth(method = "1m", confidenceInterval = FALSE) +
+  #facet_grid(FVC ~ ZC + BFC) +
+  #labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Models (Thousands)", y = "Average FPS") +
+  #theme_bw()
+
+#ggplot(dataFrame, 
+       #aes(x = avg..polys / 1000000, y = avg..fps, color = Env)) +
+  #geom_point(alpha = 0.6) +
+  #geom_smooth(method = "1m", confidenceInterval = FALSE) +
+  #facet_grid(FVC ~ ZC + BFC) +
+  #labs(title = "FPS Trends based on All Three Culling Algorithms Combined", x ="Average Polygons (Millions)", y = "Average FPS") +
+  #theme_bw()
+
+
+
+Func_Hypothesis1 <- function(){
+  dataFrame <- dataFrame %>% mutate(activeAlgorithms = FVC + BFC + ZC)
+  ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..models)) + 
+    stat_summary(fun = mean, geom = "point", size = 3) + stat_summary(fun = mean, geom = "line", group = 1) +
+    labs(x = "Number of active culling algorithms", y = "average rendered models", title = "Model count against number of active culling algorithms")+
+    theme_bw()
+}
+
+Func_Hypothesis1()
+
 
