@@ -136,6 +136,10 @@ Func_Hypothesis4 <- function()
 Func_GetEScore <- function()
 {
   defaultValues <- subset(dataFrame, BFC == 0 & FVC == 0 & ZC == 0)
+  
+  avgBaselineFPS <- mean(defaultValues$avg..fps)
+  
+  avgBFCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 0]) #get mean depending on another value
 }
 Func_ReadFiles()
 Func_Hypothesis1And2()
