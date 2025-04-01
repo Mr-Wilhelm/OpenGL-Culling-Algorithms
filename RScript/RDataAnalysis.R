@@ -136,10 +136,22 @@ Func_Hypothesis4 <- function()
 Func_GetEScore <- function()
 {
   defaultValues <- subset(dataFrame, BFC == 0 & FVC == 0 & ZC == 0)
+  df2 <- dataFrame[-221,]
   
   avgBaselineFPS <- mean(defaultValues$avg..fps)
+  avgBaselinePolys <- mean(defaultValues$avg..polys)
   
   avgBFCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 0]) #get mean depending on another value
+  
+  avgBFCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 0])
+  avgFVCPolys <- mean(df2$avg..polys[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 0])
+  avgZCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 0 & dataFrame$FVC == 0 & dataFrame$ZC == 1])
+  
+  avgBFCFVCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 1 & dataFrame$ZC == 0])
+  avgBFCZCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 1])
+  avgFVCZCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 1])
+  
+  avgCombinedPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 1 & dataFrame$ZC == 1])
 }
 Func_ReadFiles()
 Func_Hypothesis1And2()
