@@ -165,6 +165,23 @@ Func_GetEScore <- function()
   avgFVCZCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 1])
   
   avgCombinedPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 1 & dataFrame$ZC == 1])
+  
+  #EScore Value Calculation
+  NoCullingEScore <- ((avgBaselineFPS / avgBaselineFPS) * 100) / ((avgBaselinePolys / avgBaselinePolys) * 100)
+  
+  BFCEScore <- ((avgBFCFPS / avgBaselineFPS) * 100) / ((avgBFCPolys / avgBaselinePolys) * 100) 
+  
+  FVCEScore <- ((avgFVCFPS / avgBaselineFPS) * 100) / ((avgFVCPolys / avgBaselinePolys) * 100) 
+  
+  ZCEScore <- ((avgZCFPS / avgBaselineFPS) * 100) / ((avgZCPolys / avgBaselinePolys) * 100) 
+  
+  BFCFVCEScore <- ((avgBFCFVCFPS / avgBaselineFPS) * 100) / ((avgBFCFVCPolys / avgBaselinePolys) * 100) 
+  
+  BFCZCEScore <- ((avgBFCZCFPS / avgBaselineFPS) * 100) / ((avgBFCZCPolys / avgBaselinePolys) * 100) 
+  
+  FVCZCEScore <- ((avgFVCZCFPS / avgBaselineFPS) * 100) / ((avgFVCZCPolys / avgBaselinePolys) * 100) 
+  
+  CombinedEScore <- ((avgCombinedFPS / avgBaselineFPS) * 100) / ((avgCombinedPolys / avgBaselinePolys) * 100) 
 }
 Func_ReadFiles()
 Func_Hypothesis1And2()
