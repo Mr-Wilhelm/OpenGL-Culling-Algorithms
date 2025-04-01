@@ -138,10 +138,23 @@ Func_GetEScore <- function()
   defaultValues <- subset(dataFrame, BFC == 0 & FVC == 0 & ZC == 0)
   df2 <- dataFrame[-221,]
   
+  #Baseline FPS and Polygon Counts
   avgBaselineFPS <- mean(defaultValues$avg..fps)
   avgBaselinePolys <- mean(defaultValues$avg..polys)
   
+  #Average FPS Counts
+  
   avgBFCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 0]) #get mean depending on another value
+  avgFVCFPS <- mean(df2$avg..fps[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 0])
+  avgZCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 0 & dataFrame$FVC == 0 & dataFrame$ZC == 1])
+  
+  avgBFCFVCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC == 1 & dataFrame$ZC == 0])
+  avgBFCZCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 1])
+  avgFVCZCFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 1])
+  
+  avgCombinedFPS <- mean(dataFrame$avg..fps[dataFrame$BFC == 1 & dataFrame$FVC ==1 & dataFrame$ZC == 1])
+  
+  #Average Polygon Counts
   
   avgBFCPolys <- mean(dataFrame$avg..polys[dataFrame$BFC == 1 & dataFrame$FVC == 0 & dataFrame$ZC == 0])
   avgFVCPolys <- mean(df2$avg..polys[dataFrame$BFC == 0 & dataFrame$FVC == 1 & dataFrame$ZC == 0])
@@ -157,3 +170,4 @@ Func_ReadFiles()
 Func_Hypothesis1And2()
 Func_Hypothesis3()
 Func_Hypothesis4()
+Func_GetEScore()
