@@ -10,13 +10,10 @@ library(scales)
 # "mutate()" is a dplyr function, that adds new variables to existing data
 # https://dplyr.tidyverse.org/
 
-#for this data, add the culling algorithms as a binary, and set to 0 or 1 for active or not.
-# use linear regression - lm(avg..fps ~ avg..models + Env1 + Env2 + Env3 + Alg1 + Alg2 + Alg3, dataFrame)
-# if this doens't work, ANOVA works fine
-
 #plotting dataframes: https://www.geeksforgeeks.org/how-to-plot-all-the-columns-of-a-dataframe-in-r/
 #box plots: https://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
 #vectors: https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/c
+
 Func_ReadFiles <- function()
 {
   env0NoCulling <- read.csv("Env_0_NoCulling_Averages.csv") %>%   #reads the csv file
