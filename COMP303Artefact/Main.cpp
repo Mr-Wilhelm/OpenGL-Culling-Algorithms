@@ -68,8 +68,8 @@ float offsetTime = 1.0f;
 float offsetModelPos = 4.0f;
 
 //data gathering variables
-int iteration = 38;
-std::string fileName = "Env_2_AllCulling_Averages.csv";
+int iteration = 1;
+std::string fileName = "Results.csv";
 std::list<std::string> dataList;
 unsigned long int globalModelsZCulled = 0;
 unsigned long long int globalPolysZCulled = 0;
@@ -79,7 +79,7 @@ unsigned long long int globalPolysZCulled = 0;
 //this program uses spheres, so for backface culling the poly count is reduced by 50% to be conservative.
 //https://www.researchgate.net/profile/Norman-Badler/publication/228530273_A_fast_real-time_back-face_culling_approach/links/551043030cf2ba84483d424a/A-fast-real-time-back-face-culling-approach.pdf
 //https://www.gamedev.net/reference/articles/article1088.asp
-int numPolygons = (12288 / 2);    //hard coded due to time constraints
+int numPolygons = (12288);    //hard coded due to time constraints
 
 float totalFrames = 0;  //total frames used to calculate average
 unsigned long int totalModels = 0;  //total number of models per frame used to calculate average
@@ -172,9 +172,9 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    //chosenEnvironment = DENSE;
+    chosenEnvironment = DENSE;
     //chosenEnvironment = SPARSE;
-    chosenEnvironment = DYNAMIC;
+    //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
     //-------------------------------------------
@@ -332,7 +332,7 @@ int main()
             
         }
 
-        if (currentFrame >= 21.0f)
+        if (currentFrame >= 30.0f)
         {
             std::string data2 = std::to_string(iteration) +
                 " ," + std::to_string(totalFrames / dataList.size()) +
