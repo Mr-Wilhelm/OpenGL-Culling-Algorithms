@@ -178,7 +178,15 @@ Func_GetEScore <- function()
   
   FVCZCEScore <- ((avgFVCZCFPS / avgBaselineFPS) * 100) / ((avgFVCZCPolys / avgBaselinePolys) * 100) 
   
-  CombinedEScore <- ((avgCombinedFPS / avgBaselineFPS) * 100) / ((avgCombinedPolys / avgBaselinePolys) * 100) 
+  CombinedEScore <- ((avgCombinedFPS / avgBaselineFPS) * 100) / ((avgCombinedPolys / avgBaselinePolys) * 100)
+  
+  EScoreDataFrame <- data.frame(
+    name = c("E.Baseline", "E.BFC", "E.FVC", "E.ZC", "E.BFCFVC", "E.BFCZC", "E.FVCZC", "E.All"),
+    value = c(NoCullingEScore, BFCEScore, FVCEScore, ZCEScore, BFCFVCEScore, BFCZCEScore, FVCZCEScore, CombinedEScore)
+    )
+  
+  ggplot(EScoreDataFrame, aes(x = name, y = value)) +
+    geom_bar(stat = "identity")
 }
 Func_ReadFiles()
 Func_Hypothesis1And2()
