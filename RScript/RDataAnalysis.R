@@ -185,3 +185,5 @@ Func_Hypothesis1And2()
 Func_Hypothesis3()
 Func_Hypothesis4()
 Func_GetEScore()
+
+write.csv(dataFrame, "D:/dfWriteTest/dataFrame.csv")
