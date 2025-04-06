@@ -40,6 +40,31 @@ namespace UnitTest
 	public:
 		DummyModel()
 		{
+			// Create a window and OpenGL context using GLFW
+			if (!glfwInit()) {
+				std::cerr << "GLFW init failure" << std::endl;
+				return;
+			}
+
+			GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Test", nullptr, nullptr);
+			if (!window) {
+				std::cerr << "Failed to create GLFW window!" << std::endl;
+				glfwTerminate();
+				return;
+			}
+
+			glfwMakeContextCurrent(window);
+			//the other stuff is unnecessary
+			//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+			//glfwSetCursorPosCallback(window, mouse_callback);
+			//glfwSetScrollCallback(window, scroll_callback);
+
+			// Initialize GLAD to load OpenGL functions
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+				std::cerr << "Failed to initialize GLAD!" << std::endl;
+				return;
+			}
+
 			std::vector<Vertex> dummyVertexArray;
 
 			Vertex dummyV1, dummyV2, dummyV3;	//make a dummy triangle
