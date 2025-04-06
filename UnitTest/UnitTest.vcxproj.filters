@@ -1485,4 +1485,15 @@
     <Library Include="Dependencies\Lib\assimp-vc140-mt.lib" />
     <Library Include="Dependencies\Lib\glfw3.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="_60.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="1001_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

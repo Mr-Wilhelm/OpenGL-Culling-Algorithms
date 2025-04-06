@@ -35,6 +35,46 @@ namespace UnitTest
 		BoundingBoxObjectClass* parent;
 	};
 
+	class DummyModel : public Model
+	{
+	public:
+		DummyModel()
+		{
+			std::vector<Vertex> dummyVertexArray;
+
+			Vertex dummyV1, dummyV2, dummyV3;	//make a dummy triangle
+			dummyV1.pos = glm::vec3(1.0f, 0.0f, 0.0f);
+			dummyV1.norm = glm::vec3(0.0f, 1.0f, 0.0f);
+			dummyV1.texCoord = glm::vec2(1.0f, 1.0f);
+
+			dummyV2.pos = glm::vec3(0.0f, 1.0f, 0.0f);
+			dummyV2.norm = glm::vec3(0.0f, 1.0f, 0.0f);
+			dummyV2.texCoord = glm::vec2(1.0f, 1.0f);
+
+			dummyV3.pos = glm::vec3(0.0f, 0.0f, 1.0f);
+			dummyV3.norm = glm::vec3(0.0f, 1.0f, 0.0f);
+			dummyV3.texCoord = glm::vec2(1.0f, 1.0f);
+
+			dummyVertexArray.push_back(dummyV1);
+			dummyVertexArray.push_back(dummyV2);
+			dummyVertexArray.push_back(dummyV3);
+
+			std::vector<Texture> dummyTextureArray;
+			Texture dummyTex;
+			dummyTex.id = 1;
+			dummyTex.texType = "texture_diffuse";
+			dummyTex.texPath = "texture_diffuse.png";
+			dummyTextureArray.push_back(dummyTex);
+
+			std::vector<unsigned int> dummyIndexArray;
+			dummyIndexArray.push_back(0);
+			dummyIndexArray.push_back(1);
+			dummyIndexArray.push_back(2);
+
+			meshes.push_back(Mesh(dummyVertexArray, dummyTextureArray, dummyIndexArray));
+		}
+	};
+
 	TEST_CLASS(UnitTest)
 	{
 	public:	
@@ -71,7 +111,7 @@ namespace UnitTest
 			{
 				std::cout << "Running Unit Test" << std::endl;
 
-				Model testModel;	//the error is somewhere here - Credit: Joseph Walton-Rivers
+				DummyModel testModel;	//the error is somewhere here - Credit: Joseph Walton-Rivers
 				if (!testModel.isloaded())
 					Assert::Fail();
 				else
