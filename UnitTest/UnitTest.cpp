@@ -107,11 +107,11 @@ namespace UnitTest
 		{
 			try
 			{
-				glm::vec4 camPos(0.0f, 0.0f, 1000.0f, 1.0f);
+				glm::vec4 dummyCamPos(0.0f, 0.0f, 1000.0f, 1.0f);
 				int retFlag = 0;
 				unsigned long int dummyModelsCulled = 1;
 
-				RunZCulling(camPos, retFlag, dummyModelsCulled);
+				RunZCulling(dummyCamPos, retFlag, dummyModelsCulled);
 			}
 			catch (const std::exception&)
 			{
@@ -163,19 +163,6 @@ namespace UnitTest
 				std::cerr << ex.what() << std::endl;
 				Assert::Fail();
 			}
-		}
-		TEST_METHOD(beep)
-		{
-			try
-			{
-				int total = TestFunction(10, 10);
-				Assert::AreEqual(20, total);
-			}
-			catch (const std::exception&)
-			{
-				Assert::Fail();
-			}
-
 		}
 	};
 }

@@ -29,9 +29,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 void processInput(GLFWwindow* window);
 
-void DrawModels(int i, int j, int k, Shader& ourShader, Model& ourModel);
 
-void DrawModels(Shader& ourShader, Model& ourModel);
 
 //settings
 const unsigned int screenWidth = 1200;
@@ -52,34 +50,11 @@ float lastTimeWritten = 0.0f;
 
 bool wireFrame = false;
 
-//culling bools
-bool isFrustumCulling = false;
-bool isZCulling = false;
-
-//object cube variables
-int xAxisObjects = 25;
-int yAxisObjects = 25;
-int zAxisObjects = 25;
-
-//model transform
-glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-float offsetDiv = 4.0f;
-float offsetTime = 1.0f;
-float offsetModelPos = 4.0f;
-
 //data gathering variables
 int iteration = 1;
-std::string fileName = "Results.csv";
+std::string fileName = "DummyData.csv";
 std::list<std::string> dataList;
-unsigned long int globalModelsZCulled = 0;
-unsigned long long int globalPolysZCulled = 0;
 
-
-//poly count reduction percentage is approx 50% on cubes, and just above that for spheres.
-//this program uses spheres, so for backface culling the poly count is reduced by 50% to be conservative.
-//https://www.researchgate.net/profile/Norman-Badler/publication/228530273_A_fast_real-time_back-face_culling_approach/links/551043030cf2ba84483d424a/A-fast-real-time-back-face-culling-approach.pdf
-//https://www.gamedev.net/reference/articles/article1088.asp
-int numPolygons = (12288);    //hard coded due to time constraints
 
 float totalFrames = 0;  //total frames used to calculate average
 unsigned long int totalModels = 0;  //total number of models per frame used to calculate average
@@ -96,16 +71,7 @@ enum EnvironmentEnum
     DEFAULT //default value for testing
 };
 
-void DrawModels(glm::vec3 modelPos, int i, int j, int k, Shader& ourShader, Model& ourModel, glm::vec3 modelScale)
-{
-    glm::mat4 iteratedModel = glm::mat4(1.0f);
-    iteratedModel = glm::translate(iteratedModel, modelPos);
-    iteratedModel = glm::scale(iteratedModel, modelScale);	// scale
-    iteratedModel = glm::rotate(iteratedModel, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    ourShader.setMat4("model", iteratedModel);
-    ourModel.Draw(ourShader);
-}
 
 bool WriteData(std::string fileName, std::list<std::string> csvData)
 {
@@ -172,8 +138,8 @@ int main()
     //----------SELECT ENVIRONMENT HERE----------
     //------CHOICES: DENSE, SPARSE, DYNAMIC------
 
-    chosenEnvironment = DENSE;
-    //chosenEnvironment = SPARSE;
+    //chosenEnvironment = DENSE;
+    chosenEnvironment = SPARSE;
     //chosenEnvironment = DYNAMIC;
     //chosenEnvironment = DEFAULT;
 
@@ -365,157 +331,17 @@ int main()
         {
             case(DENSE):    //densely packed scene
             {
-                if (isFrustumCulling)
-                {
-                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
-                }
-                else
-                {
-                    unsigned long int modelsCulled = 0;
-                    unsigned long int modelsZCulled = 0;
-
-                    for (int i = 0; i < xAxisObjects; i++)
-                    {
-                        for (int j = 0; j < yAxisObjects; j++)
-                        {
-                            for (int k = 0; k < zAxisObjects; k++)
-                            {
-                                total++;
-                                glm::vec3 iteratedModelPos = glm::vec3(25.0f * i, 25.0f * j, 25.0f * k);
-
-                                if (isZCulling)
-                                {
-                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
-                                    {
-                                        
-                                    }
-                                    else
-                                    {
-                                        modelsZCulled++;
-                                        globalModelsZCulled = modelsZCulled;
-                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
-                                    }
-                                }
-
-                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
-                                display++;
-                            }
-                        }
-                    }
-                    //std::cout << "Z Culled models: " << modelsZCulled << " Rendered Models: " << display - globalModelsZCulled << " RenderedPolygons: " << (display * numPolygons) - (globalModelsZCulled * numPolygons) << std::endl;
-                }
+                DrawDenseEnvironment(ourBoundingBox, camView, ourShader, display, total, view, ourModel);
                 break;
             }
             case(SPARSE):   //sparsely packed scene
             {
-                if (isFrustumCulling)
-                {
-                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
-                }
-                else
-                {
-                    unsigned long int modelsCulled = 0;
-                    unsigned long long int modelsZCulled = 0;
-
-                    for (int i = 0; i < xAxisObjects; i++)
-                    {
-                        for (int j = 0; j < yAxisObjects; j++)
-                        {
-                            for (int k = 0; k < zAxisObjects; k++)
-                            {
-                                total++;
-                                glm::vec3 iteratedModelPos = glm::vec3(100.0f * i, 100.0f * j, 100.0f * k);
-
-                                if (isZCulling)
-                                {
-                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        modelsZCulled++;
-                                        globalModelsZCulled = modelsZCulled;
-                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
-                                    }
-                                }
-
-                                DrawModels(iteratedModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));
-                                display++;
-                            }
-                        }
-                    }
-                }
+                DrawSparseEnvironment(ourBoundingBox, camView, ourShader, display, total, view, ourModel);
                 break;
             }
             case(DYNAMIC):  //dynamic scene (its got moving parts in it :O)
             {
-                //matrix maths for rotations learned here, then refactored - https://learnopengl.com/Getting-started/Transformations
-                //and here as well - https://catlikecoding.com/unity/tutorials/rendering/part-1/
-                if (isFrustumCulling)
-                {
-                    for (auto& boxChild : ourBoundingBox.children)
-                    {
-                        float xOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->x);
-                        float yOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->y);
-                        float zOffset = 10.0f * glm::sin(currentFrame / offsetTime + boxChild->z);
-
-                        glm::vec3 vectorOffset = glm::vec3(xOffset / offsetDiv, yOffset / offsetDiv, zOffset / offsetDiv);
-
-                        glm::vec3 finalModelPos = glm::vec3(boxChild->x * offsetModelPos, boxChild->y * offsetModelPos, boxChild->z * offsetModelPos) + vectorOffset;
-
-                        boxChild->transform.SetPos(finalModelPos);
-                    }
-                    ourBoundingBox.UpdateSelfAndChild();
-                    RunFrustumCulling(ourBoundingBox, camView, ourShader, display, total);
-                }
-                else
-                {
-                    unsigned long int modelsCulled = 0;
-                    unsigned long long int modelsZCulled = 0;
-
-                    for (int i = 0; i < xAxisObjects; i++)
-                    {
-                        for (int j = 0; j < yAxisObjects; j++)
-                        {
-                            for (int k = 0; k < zAxisObjects; k++)
-                            {
-                                total++;
-                                glm::vec3 iteratedModelPos = glm::vec3(40.0f * i, 40.0f * j, 40.0f * k);
-
-                                //offset the starting position for each model so they rotate starting in a different position
-                                float xOffset = 40.0f * glm::sin(currentFrame + i);
-                                float yOffset = 40.0f * glm::cos(currentFrame + j);
-                                float zOffset = 40.0f * glm::sin(currentFrame + k);
-
-                                glm::vec3 vectorOffset = glm::vec3(xOffset, yOffset, zOffset);  //make the offset a vector
-
-                                glm::vec3 finalModelPos = iteratedModelPos + vectorOffset;  //create end pos with the start pos and vector
-
-                                if (isZCulling)
-                                {
-                                    glm::vec4 viewPos = view * glm::vec4(iteratedModelPos, 1.0f);
-                                    if (viewPos.z < -0.1f && viewPos.z > -farPlane)
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        modelsZCulled++;
-                                        globalModelsZCulled = modelsZCulled;
-                                        globalPolysZCulled = globalModelsZCulled * numPolygons;
-                                    }
-                                }
-
-                                DrawModels(finalModelPos, i, j, k, ourShader, ourModel, glm::vec3(10.0f, 10.0f, 10.0f));    //draw models
-                                display++;
-                            }
-                        }
-                    }
-                }
-                
+                DrawDynamicEnvironment(ourBoundingBox, currentFrame, camView, ourShader, display, total, view, ourModel);
 
                 break;
             }
@@ -531,7 +357,6 @@ int main()
     glfwTerminate();
     return 0;
 }
-
 void processInput(GLFWwindow* window)
 {
     //key and mouse input checks
