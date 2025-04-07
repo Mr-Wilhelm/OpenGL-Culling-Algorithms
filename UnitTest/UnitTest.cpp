@@ -35,6 +35,8 @@ namespace UnitTest
 		BoundingBoxObjectClass* parent;
 	};
 
+	
+
 	class DummyModel : public Model
 	{
 	public:
@@ -157,6 +159,27 @@ namespace UnitTest
 				RunFrustumCulling(testBoundingBox, testFrustum, testShader, testDisplay, testTotal);
 
 				std::cout << "Finished Unit Test" << std::endl;
+			}
+			catch (const std::exception& ex)
+			{
+				std::cerr << ex.what() << std::endl;
+				Assert::Fail();
+			}
+		}
+		TEST_METHOD(UnitTest_DrawDenseEnvironment)
+		{
+			try
+			{
+				DummyModel testModel;
+				BoundingBoxObjectClass testBoundingBox(testModel);
+				Camera testCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+				Frustum testFrustum = CreateCameraBounds(testCamera, 1.0f, glm::radians(45.0f), 0.1f, 1000000.0f);
+				Shader testShader("shader.vs", "shader.fs");
+				unsigned int testDisplay;
+				unsigned int testTotal;
+				glm::mat4 testView = 1.0f;
+
+				DrawDenseEnvironment(testBoundingBox, testFrustum, testShader, testDisplay, testTotal, testView, testModel);
 			}
 			catch (const std::exception& ex)
 			{
