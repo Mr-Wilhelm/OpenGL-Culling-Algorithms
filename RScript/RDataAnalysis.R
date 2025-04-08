@@ -90,10 +90,36 @@ summary(model)
 Func_Hypothesis1And2 <- function()
 {
   dataFrame <- dataFrame %>% mutate(activeAlgorithms = FVC + BFC + ZC)
-  ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..models)) + 
+  cleanDf <- dataFrame[-221,]
+  polydf <- ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..polys)) + 
+    stat_summary(fun = mean, geom = "point", size = 3) + stat_summary(fun = mean, geom = "line", group = 1) +
+    labs(x = "Number of active culling algorithms", y = "average rendered polygons", title = "Model count against number of active culling algorithms")+
+    theme_bw()
+
+  GraphPolyAvg0 <- mean(cleanDf$avg..polys[cleanDf$activeAlgorithms == 0])
+  GraphPolyAvg1 <- mean(cleanDf$avg..polys[cleanDf$activeAlgorithms == 1])
+  GraphPolyAvg2 <- mean(cleanDf$avg..polys[cleanDf$activeAlgorithms == 2])
+  GraphPolyAvg3 <- mean(cleanDf$avg..polys[cleanDf$activeAlgorithms == 3])
+  
+ modeldf <- ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..models)) + 
     stat_summary(fun = mean, geom = "point", size = 3) + stat_summary(fun = mean, geom = "line", group = 1) +
     labs(x = "Number of active culling algorithms", y = "average rendered models", title = "Model count against number of active culling algorithms")+
     theme_bw()
+ 
+ GraphModelAvg0 <- mean(cleanDf$avg..models[cleanDf$activeAlgorithms == 0])
+ GraphModelAvg1 <- mean(cleanDf$avg..models[cleanDf$activeAlgorithms == 1])
+ GraphModelAvg2 <- mean(cleanDf$avg..models[cleanDf$activeAlgorithms == 2])
+ GraphModelAvg3 <- mean(cleanDf$avg..models[cleanDf$activeAlgorithms == 3])
+  
+  fpsdf <- ggplot(dataFrame, aes(x = factor(activeAlgorithms), y = avg..fps)) + 
+    stat_summary(fun = mean, geom = "point", size = 3) + stat_summary(fun = mean, geom = "line", group = 1) +
+    labs(x = "Number of active culling algorithms", y = "average frames per second", title = "Model count against number of active culling algorithms")+
+    theme_bw()
+  
+  GraphFPSAvg0 <- mean(cleanDf$avg..fps[cleanDf$activeAlgorithms == 0])
+  GraphFPSAvg1 <- mean(cleanDf$avg..fps[cleanDf$activeAlgorithms == 1])
+  GraphFPSAvg2 <- mean(cleanDf$avg..fps[cleanDf$activeAlgorithms == 2])
+  GraphFPSAvg3 <- mean(cleanDf$avg..fps[cleanDf$activeAlgorithms == 3])
 }
 
 Func_Hypothesis3 <- function()
@@ -194,4 +220,5 @@ Func_Hypothesis3()
 Func_Hypothesis4()
 Func_GetEScore()
 
-write.csv(dataFrame, "D:/dfWriteTest/dataFrame.csv")
+write.csv(dataFrame, "D:/dataFrame.csv")
+write.csv(fpsdf$data, "D:/FpsGraphDataValues.csv")
