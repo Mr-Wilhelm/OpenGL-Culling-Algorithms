@@ -5,6 +5,8 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 
+//learn opengl camera class tutorial used for this script - https://learnopengl.com/Getting-started/Camera
+
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,

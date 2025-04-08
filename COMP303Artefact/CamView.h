@@ -8,6 +8,10 @@
 
 #include "Camera.h"
 
+//frustum culling algorithm code and tutorial can be found here - this tutorial was used extensively for this script.
+//credit: Frustum culling tutorial: https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+// https://learnopengl.com/code_viewer_gh.php?code=src/8.guest/2021/1.scene/2.frustum_culling/frustum_culling.cpp
+
 class Transform
 {
 protected:
@@ -502,17 +506,17 @@ public:
 
 	void DrawSelfAndChild(const Frustum& frustum, Shader& ourShader, unsigned int& display, unsigned int& total)
 	{
-		if (boundingVolume->IsInView(frustum, transform))
+		if (boundingVolume->IsInView(frustum, transform))	//check if the bounding box is in view
 		{
-			ourShader.setMat4("model", transform.ReturnModelMatrix());
-			pModel->Draw(ourShader);
-			display++;
+			ourShader.setMat4("model", transform.ReturnModelMatrix());	//update the transform matrix
+			pModel->Draw(ourShader);	//draw the model
+			display++;	//increment displayed models
 		}
-		total++;
+		total++;	//increment total models
 
 		for (auto& child : children)
 		{
-			child->DrawSelfAndChild(frustum, ourShader, display, total);
+			child->DrawSelfAndChild(frustum, ourShader, display, total);	//draw bounding box childs
 		}
 	}
 

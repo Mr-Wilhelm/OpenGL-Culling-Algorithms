@@ -357,6 +357,7 @@ int main()
     glfwTerminate();
     return 0;
 }
+//generic code for input processing
 void processInput(GLFWwindow* window)
 {
     //key and mouse input checks

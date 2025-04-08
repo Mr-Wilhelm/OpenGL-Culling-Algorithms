@@ -68,7 +68,7 @@ inline void RunBackFaceCulling(GLFWwindow* window)
 }
 inline void RunFrustumCulling(BoundingBoxObjectClass& ourBoundingBox, const Frustum& camView, Shader& ourShader, unsigned int& display, unsigned int& total)
 {
-    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total);
+    ourBoundingBox.DrawSelfAndChild(camView, ourShader, display, total); //commenting found in this function
 }
 
 int TestFunction(int a, int b)
