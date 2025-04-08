@@ -134,26 +134,28 @@ Func_Hypothesis3 <- function()
 
 Func_Hypothesis4 <- function()
 {
-  ggplot(dataFrame, 
+  bp1 <- ggplot(dataFrame, 
          aes(x = Env, y = avg..fps, fill = factor(BFC))) + geom_boxplot() + labs(
            title = "FPS Based on back face culling",
            x = "Environment",
            y = "Average FPS") +
     theme_minimal()
   
-  ggplot(dataFrame, 
+  bp2 <- ggplot(dataFrame, 
          aes(x = Env, y = avg..fps, fill = factor(FVC))) + geom_boxplot() + labs(
            title = "FPS Based on Frustum View Culling",
            x = "Environment",
            y = "Average FPS") +
     theme_minimal()
   
-  ggplot(dataFrame, 
+  bp3 <- ggplot(dataFrame, 
          aes(x = Env, y = avg..fps, fill = factor(ZC))) + geom_boxplot() + labs(
            title = "FPS Based on z Culling culling",
            x = "Environment",
            y = "Average FPS") +
     theme_minimal()
+  
+  
 }
 
 Func_GetEScore <- function()
