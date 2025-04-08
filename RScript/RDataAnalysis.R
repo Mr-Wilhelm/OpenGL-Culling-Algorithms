@@ -134,28 +134,37 @@ Func_Hypothesis3 <- function()
 
 Func_Hypothesis4 <- function()
 {
-  bp1 <- ggplot(dataFrame, 
-         aes(x = Env, y = avg..fps, fill = factor(BFC))) + geom_boxplot() + labs(
-           title = "FPS Based on back face culling",
-           x = "Environment",
-           y = "Average FPS") +
+  cleanDf <- dataFrame[-221,]
+  ggplot(dataFrame, 
+    aes(x = Env, y = avg..fps, fill = factor(BFC))) + geom_boxplot() + labs(
+    title = "FPS Based on back face culling",
+    x = "Environment",
+    y = "Average FPS") +
     theme_minimal()
   
-  bp2 <- ggplot(dataFrame, 
-         aes(x = Env, y = avg..fps, fill = factor(FVC))) + geom_boxplot() + labs(
-           title = "FPS Based on Frustum View Culling",
-           x = "Environment",
-           y = "Average FPS") +
-    theme_minimal()
+  ggplot(dataFrame, 
+    aes(x = Env, y = avg..fps, fill = factor(FVC))) + geom_boxplot() + labs(
+    title = "FPS Based on Frustum View Culling",
+    x = "Environment",
+    y = "Average FPS") +
+  theme_minimal()
   
-  bp3 <- ggplot(dataFrame, 
-         aes(x = Env, y = avg..fps, fill = factor(ZC))) + geom_boxplot() + labs(
-           title = "FPS Based on z Culling culling",
-           x = "Environment",
-           y = "Average FPS") +
-    theme_minimal()
+  ggplot(dataFrame, 
+    aes(x = Env, y = avg..fps, fill = factor(ZC))) + geom_boxplot() + labs(
+    title = "FPS Based on z Culling culling",
+    x = "Environment",
+    y = "Average FPS") +
+  theme_minimal()
   
+  #get subsets showing data values for these graphs and summarise to get stats
+  bp1df <- subset(dataFrame, BFC == 1 & FVC == 0 & ZC == 0)
+  summary(bp1df)
   
+  bp2df <- subset(dataFrame, BFC == 0 & FVC == 1 & ZC == 0)
+  summary (bp2df)
+  
+  bp3df <- subset(dataFrame, BFC == 0 & FVC == 0 & ZC == 1)
+  summary (bp3df)
 }
 
 Func_GetEScore <- function()
