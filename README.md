@@ -13,7 +13,7 @@ In the int main() function, there is a section which looks like:
 
     //-------------------------------------------
 
-Here you can change the environment before runtime.
+Here you can change the environment before runtime by commenting out specific lines. Only one environment can be chosen, otherwise 
 
 During Runtime:
 - WASD keys to move
