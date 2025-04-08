@@ -1,3 +1,7 @@
+A code editor/IDE is required to run this program, there is no external .exe file
+Load the .sln file in the code compiler (preferably visual studio)
+And compile and run the code.
+
 How to Use:
 
 All actions should only be done in Main.cpp.
