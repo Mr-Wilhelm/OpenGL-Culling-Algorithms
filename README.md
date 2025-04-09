@@ -27,3 +27,15 @@ During Runtime:
 - 4 - disable frustum culling
 - 5 - enable Z Culling
 - 6 - disable Z Culling
+
+<h2>References</h2>
+<p>
+Arrow operator - widely used in the script - https://www.geeksforgeeks.org/arrow-operator-in-c-c-with-examples/ <br>
+Maths for matrix transformations - https://learnopengl.com/Getting-started/Transformations <br>
+Maths for matrix transformations - https://catlikecoding.com/unity/tutorials/rendering/part-1/ <br>
+LearnOpenGL shader class, code here is used in Shader.h - https://learnopengl.com/Getting-started/Shaders <br>
+LearnOpenGL mesh class, code here is used in Mesh.h - https://learnopengl.com/Model-Loading/Mesh <br>
+LearnOpenGL model class, code here is used in Model.h - https://learnopengl.com/Model-Loading/Model <br>
+LearnOpenGL frustum culling, code here is used in CamView.h - https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling <br>
+LearnOpenGL camera class, code here used in Camera.h - https://learnopengl.com/Getting-started/Camera <br>    
+</p>
